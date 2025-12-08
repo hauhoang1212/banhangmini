@@ -1,6 +1,6 @@
 ﻿namespace Quanlibanhang
 {
-    partial class Formmain
+    partial class FormMain
     {
         /// <summary>
         ///  Required designer variable.
@@ -83,7 +83,7 @@
             // uiLabel1
             // 
             uiLabel1.BackColor = Color.Wheat;
-            uiLabel1.Dock = DockStyle.Fill;
+            uiLabel1.Dock = DockStyle.Top;
             uiLabel1.Font = new Font("Microsoft Sans Serif", 12F);
             uiLabel1.ForeColor = Color.FromArgb(48, 48, 48);
             uiLabel1.Location = new Point(0, 0);
@@ -114,9 +114,8 @@
             // menuItemExit
             // 
             menuItemExit.Name = "menuItemExit";
-            menuItemExit.Size = new Size(130, 26);
+            menuItemExit.Size = new Size(224, 26);
             menuItemExit.Text = "Thoát";
-            menuItemExit.Click += menuItemExit_Click;
             // 
             // danhMụcToolStripMenuItem
             // 
@@ -153,14 +152,14 @@
             menuItemSale.Text = "Bán hàng";
             menuItemSale.Click += menuItemSale_Click;
             // 
-            // Form1
+            // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(875, 494);
             Controls.Add(tableLayoutPanel1);
             MainMenuStrip = menuStrip1;
-            Name = "Form1";
+            Name = "FormMain";
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();

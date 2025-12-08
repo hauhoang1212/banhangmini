@@ -1,11 +1,12 @@
 ﻿namespace Quanlibanhang
 {
-    public partial class Formmain : Form
+    public partial class FormMain : Form
     {
-        public Formmain()
+        public FormMain()
         {
             InitializeComponent();
         }
+
         /// <summary>
         /// 
         /// </summary>
