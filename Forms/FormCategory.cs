@@ -21,5 +21,15 @@ namespace Quanlibanhang
         {
 
         }
+
+        private void uiipTextBox1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uiTableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
