@@ -49,9 +49,11 @@
             txtSearch = new Sunny.UI.UITextBox();
             uiLabel4 = new Sunny.UI.UILabel();
             dgvCategories = new DataGridView();
-            cID = new DataGridViewTextBoxColumn();
+            cchoose = new DataGridViewCheckBoxColumn();
+            sSTT = new DataGridViewTextBoxColumn();
+            cCategoryId = new DataGridViewTextBoxColumn();
             cName = new DataGridViewTextBoxColumn();
-            cDESC = new DataGridViewTextBoxColumn();
+            cDescription = new DataGridViewTextBoxColumn();
             uiTableLayoutPanel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             uiTableLayoutPanel2.SuspendLayout();
@@ -78,9 +80,9 @@
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
-            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 178F));
-            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 18F));
-            uiTableLayoutPanel1.Size = new Size(800, 450);
+            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            uiTableLayoutPanel1.Size = new Size(875, 710);
             uiTableLayoutPanel1.TabIndex = 0;
             uiTableLayoutPanel1.TagString = null;
             // 
@@ -94,7 +96,7 @@
             uiPanel1.Margin = new Padding(0);
             uiPanel1.MinimumSize = new Size(1, 1);
             uiPanel1.Name = "uiPanel1";
-            uiPanel1.Size = new Size(800, 40);
+            uiPanel1.Size = new Size(875, 40);
             uiPanel1.TabIndex = 0;
             uiPanel1.Text = "QUÁN LÍ LOẠI SẢN PHẤM";
             uiPanel1.TextAlignment = ContentAlignment.MiddleCenter;
@@ -120,14 +122,14 @@
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Size = new Size(796, 76);
+            tableLayoutPanel1.Size = new Size(871, 76);
             tableLayoutPanel1.TabIndex = 1;
             // 
             // txtDescription
             // 
             txtDescription.Dock = DockStyle.Fill;
             txtDescription.Font = new Font("Microsoft Sans Serif", 12F);
-            txtDescription.Location = new Point(569, 2);
+            txtDescription.Location = new Point(644, 2);
             txtDescription.Margin = new Padding(2);
             txtDescription.MinimumSize = new Size(1, 16);
             txtDescription.Name = "txtDescription";
@@ -144,7 +146,7 @@
             uiLabel5.Dock = DockStyle.Fill;
             uiLabel5.Font = new Font("Microsoft Sans Serif", 12F);
             uiLabel5.ForeColor = Color.FromArgb(48, 48, 48);
-            uiLabel5.Location = new Point(442, 7);
+            uiLabel5.Location = new Point(517, 7);
             uiLabel5.Margin = new Padding(7);
             uiLabel5.Name = "uiLabel5";
             uiLabel5.Size = new Size(118, 24);
@@ -156,13 +158,13 @@
             // 
             txtCategoryId.Dock = DockStyle.Fill;
             txtCategoryId.Font = new Font("Microsoft Sans Serif", 12F);
-            txtCategoryId.Location = new Point(121, 40);
+            txtCategoryId.Location = new Point(142, 40);
             txtCategoryId.Margin = new Padding(2);
             txtCategoryId.MinimumSize = new Size(1, 16);
             txtCategoryId.Name = "txtCategoryId";
             txtCategoryId.Padding = new Padding(5);
             txtCategoryId.ShowText = false;
-            txtCategoryId.Size = new Size(312, 34);
+            txtCategoryId.Size = new Size(366, 34);
             txtCategoryId.TabIndex = 4;
             txtCategoryId.TextAlignment = ContentAlignment.MiddleLeft;
             txtCategoryId.Watermark = "";
@@ -176,7 +178,7 @@
             uiLabel3.Location = new Point(7, 45);
             uiLabel3.Margin = new Padding(7);
             uiLabel3.Name = "uiLabel3";
-            uiLabel3.Size = new Size(105, 24);
+            uiLabel3.Size = new Size(126, 24);
             uiLabel3.TabIndex = 2;
             uiLabel3.Text = "ID loại";
             uiLabel3.TextAlign = ContentAlignment.MiddleCenter;
@@ -190,7 +192,7 @@
             uiLabel1.Location = new Point(7, 7);
             uiLabel1.Margin = new Padding(7);
             uiLabel1.Name = "uiLabel1";
-            uiLabel1.Size = new Size(105, 24);
+            uiLabel1.Size = new Size(126, 24);
             uiLabel1.TabIndex = 0;
             uiLabel1.Text = "Tên loại";
             uiLabel1.TextAlign = ContentAlignment.MiddleCenter;
@@ -199,13 +201,13 @@
             // 
             txtCategoryName.Dock = DockStyle.Fill;
             txtCategoryName.Font = new Font("Microsoft Sans Serif", 12F);
-            txtCategoryName.Location = new Point(121, 2);
+            txtCategoryName.Location = new Point(142, 2);
             txtCategoryName.Margin = new Padding(2);
             txtCategoryName.MinimumSize = new Size(1, 16);
             txtCategoryName.Name = "txtCategoryName";
             txtCategoryName.Padding = new Padding(5);
             txtCategoryName.ShowText = false;
-            txtCategoryName.Size = new Size(312, 34);
+            txtCategoryName.Size = new Size(366, 34);
             txtCategoryName.TabIndex = 3;
             txtCategoryName.TextAlignment = ContentAlignment.MiddleLeft;
             txtCategoryName.Watermark = "";
@@ -229,7 +231,7 @@
             uiTableLayoutPanel2.Name = "uiTableLayoutPanel2";
             uiTableLayoutPanel2.RowCount = 1;
             uiTableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            uiTableLayoutPanel2.Size = new Size(794, 46);
+            uiTableLayoutPanel2.Size = new Size(869, 46);
             uiTableLayoutPanel2.TabIndex = 2;
             uiTableLayoutPanel2.TagString = null;
             // 
@@ -237,37 +239,40 @@
             // 
             btnCancel.Dock = DockStyle.Fill;
             btnCancel.Font = new Font("Microsoft Sans Serif", 12F);
-            btnCancel.Location = new Point(578, 3);
+            btnCancel.Location = new Point(631, 3);
             btnCancel.MinimumSize = new Size(1, 1);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(102, 40);
+            btnCancel.Size = new Size(112, 40);
             btnCancel.TabIndex = 4;
             btnCancel.Text = "Huỷ";
             btnCancel.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnCancel.Click += btnCancel_Click;
             // 
             // btnDelete
             // 
             btnDelete.Dock = DockStyle.Fill;
             btnDelete.Font = new Font("Microsoft Sans Serif", 12F);
-            btnDelete.Location = new Point(219, 3);
+            btnDelete.Location = new Point(239, 3);
             btnDelete.MinimumSize = new Size(1, 1);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(102, 40);
+            btnDelete.Size = new Size(112, 40);
             btnDelete.TabIndex = 2;
             btnDelete.Text = "Xoá";
             btnDelete.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnEdit
             // 
             btnEdit.Dock = DockStyle.Fill;
             btnEdit.Font = new Font("Microsoft Sans Serif", 12F);
-            btnEdit.Location = new Point(111, 3);
+            btnEdit.Location = new Point(121, 3);
             btnEdit.MinimumSize = new Size(1, 1);
             btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(102, 40);
+            btnEdit.Size = new Size(112, 40);
             btnEdit.TabIndex = 1;
             btnEdit.Text = "Sửa";
             btnEdit.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnAdd
             // 
@@ -276,7 +281,7 @@
             btnAdd.Location = new Point(3, 3);
             btnAdd.MinimumSize = new Size(1, 1);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(102, 40);
+            btnAdd.Size = new Size(112, 40);
             btnAdd.TabIndex = 0;
             btnAdd.Text = "Thêm";
             btnAdd.TipsFont = new Font("Microsoft Sans Serif", 9F);
@@ -286,13 +291,14 @@
             // 
             btnSave.Dock = DockStyle.Fill;
             btnSave.Font = new Font("Microsoft Sans Serif", 12F);
-            btnSave.Location = new Point(686, 3);
+            btnSave.Location = new Point(749, 3);
             btnSave.MinimumSize = new Size(1, 1);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(105, 40);
+            btnSave.Size = new Size(117, 40);
             btnSave.TabIndex = 3;
             btnSave.Text = "Lưu";
             btnSave.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnSave.Click += btnSave_Click;
             // 
             // uiTableLayoutPanel3
             // 
@@ -310,7 +316,7 @@
             uiTableLayoutPanel3.Name = "uiTableLayoutPanel3";
             uiTableLayoutPanel3.RowCount = 1;
             uiTableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            uiTableLayoutPanel3.Size = new Size(796, 34);
+            uiTableLayoutPanel3.Size = new Size(871, 34);
             uiTableLayoutPanel3.TabIndex = 3;
             uiTableLayoutPanel3.TagString = null;
             // 
@@ -323,7 +329,7 @@
             uiLabel2.Location = new Point(2, 2);
             uiLabel2.Margin = new Padding(2);
             uiLabel2.Name = "uiLabel2";
-            uiLabel2.Size = new Size(135, 30);
+            uiLabel2.Size = new Size(148, 30);
             uiLabel2.TabIndex = 0;
             uiLabel2.Text = "Tìm kiếm";
             uiLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -332,10 +338,10 @@
             // 
             btnFilter.Dock = DockStyle.Fill;
             btnFilter.Font = new Font("Microsoft Sans Serif", 12F);
-            btnFilter.Location = new Point(410, 3);
+            btnFilter.Location = new Point(449, 3);
             btnFilter.MinimumSize = new Size(1, 1);
             btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(98, 28);
+            btnFilter.Size = new Size(107, 28);
             btnFilter.TabIndex = 2;
             btnFilter.Text = "Lọc";
             btnFilter.TipsFont = new Font("Microsoft Sans Serif", 9F);
@@ -344,13 +350,13 @@
             // 
             txtSearch.Dock = DockStyle.Fill;
             txtSearch.Font = new Font("Microsoft Sans Serif", 12F);
-            txtSearch.Location = new Point(143, 5);
+            txtSearch.Location = new Point(156, 5);
             txtSearch.Margin = new Padding(4, 5, 4, 5);
             txtSearch.MinimumSize = new Size(1, 16);
             txtSearch.Name = "txtSearch";
             txtSearch.Padding = new Padding(5);
             txtSearch.ShowText = false;
-            txtSearch.Size = new Size(260, 24);
+            txtSearch.Size = new Size(286, 24);
             txtSearch.TabIndex = 3;
             txtSearch.TextAlignment = ContentAlignment.MiddleLeft;
             txtSearch.Watermark = "";
@@ -363,7 +369,7 @@
             uiLabel4.ForeColor = Color.FromArgb(48, 48, 48);
             uiLabel4.Location = new Point(3, 210);
             uiLabel4.Name = "uiLabel4";
-            uiLabel4.Size = new Size(794, 32);
+            uiLabel4.Size = new Size(869, 32);
             uiLabel4.TabIndex = 4;
             uiLabel4.Text = "Danh sách các loại sản phẩm";
             uiLabel4.TextAlign = ContentAlignment.MiddleCenter;
@@ -372,20 +378,35 @@
             // 
             dgvCategories.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvCategories.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCategories.Columns.AddRange(new DataGridViewColumn[] { cID, cName, cDESC });
+            dgvCategories.Columns.AddRange(new DataGridViewColumn[] { cchoose, sSTT, cCategoryId, cName, cDescription });
             dgvCategories.Dock = DockStyle.Fill;
             dgvCategories.Location = new Point(3, 245);
             dgvCategories.Name = "dgvCategories";
             dgvCategories.RowHeadersWidth = 51;
-            dgvCategories.Size = new Size(794, 172);
+            dgvCategories.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCategories.Size = new Size(869, 442);
             dgvCategories.TabIndex = 5;
             dgvCategories.CellContentClick += dgvCategories_CellContentClick;
             // 
-            // cID
+            // cchoose
             // 
-            cID.HeaderText = "ID loại";
-            cID.MinimumWidth = 6;
-            cID.Name = "cID";
+            cchoose.HeaderText = "Chọn";
+            cchoose.MinimumWidth = 6;
+            cchoose.Name = "cchoose";
+            cchoose.Resizable = DataGridViewTriState.True;
+            cchoose.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // sSTT
+            // 
+            sSTT.HeaderText = "STT";
+            sSTT.MinimumWidth = 6;
+            sSTT.Name = "sSTT";
+            // 
+            // cCategoryId
+            // 
+            cCategoryId.HeaderText = "ID loại";
+            cCategoryId.MinimumWidth = 6;
+            cCategoryId.Name = "cCategoryId";
             // 
             // cName
             // 
@@ -393,17 +414,17 @@
             cName.MinimumWidth = 6;
             cName.Name = "cName";
             // 
-            // cDESC
+            // cDescription
             // 
-            cDESC.HeaderText = "Mô tả";
-            cDESC.MinimumWidth = 6;
-            cDESC.Name = "cDESC";
+            cDescription.HeaderText = "Mô tả";
+            cDescription.MinimumWidth = 6;
+            cDescription.Name = "cDescription";
             // 
             // FormCategory
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(875, 710);
             Controls.Add(uiTableLayoutPanel1);
             Name = "FormCategory";
             Text = "FormCategory";
@@ -438,8 +459,10 @@
         private Sunny.UI.UILabel uiLabel5;
         private Sunny.UI.UITextBox txtDescription;
         private DataGridView dgvCategories;
-        private DataGridViewTextBoxColumn cID;
+        private DataGridViewCheckBoxColumn cchoose;
+        private DataGridViewTextBoxColumn sSTT;
+        private DataGridViewTextBoxColumn cCategoryId;
         private DataGridViewTextBoxColumn cName;
-        private DataGridViewTextBoxColumn cDESC;
+        private DataGridViewTextBoxColumn cDescription;
     }
 }

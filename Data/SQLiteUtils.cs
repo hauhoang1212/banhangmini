@@ -433,34 +433,34 @@ namespace Quanlibanhang.Data
             }
         }
 
-        // Phương thức thực thi truy vấn và trả về DataTable
-        //public DataTable ExecuteQuery(string commandText)
-        //{
-        //    var resultTable = new DataTable();
-        //    lock (LockDb)
-        //    {
-        //        try
-        //        {
-        //            // Kiểm tra và mở kết nối nếu cần
-        //            if (connection.State != ConnectionState.Open)
-        //            {
-        //                connection.Open();
-        //            }                
-        //            // Tạo SQLiteCommand
-        //            var command = new SQLiteCommand(commandText, connection);
+        //Phương thức thực thi truy vấn và trả về DataTable
+        public DataTable ExecuteQuery(string commandText)
+        {
+            var resultTable = new DataTable();
+            lock (LockDb)
+            {
+                try
+                {
+                    // Kiểm tra và mở kết nối nếu cần
+                    if (connection.State != ConnectionState.Open)
+                    {
+                        connection.Open();
+                    }
+                    // Tạo SQLiteCommand
+                    var command = new SQLiteCommand(commandText, connection);
 
-        //            // Tạo SQLiteDataAdapter để fill dữ liệu vào DataTable
-        //            var dataAdapter = new SQLiteDataAdapter(command);
-        //            dataAdapter.Fill(resultTable);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Utils.LogDB("ExecuteQuery", ex, commandText, "Không thể thực thi truy vấn.");
-        //        }
-        //        // Không đóng kết nối ở đây để có thể tiếp tục sử dụng cho các lệnh tiếp theo
-        //    }
-        //    return resultTable;
-        //}
+                    // Tạo SQLiteDataAdapter để fill dữ liệu vào DataTable
+                    var dataAdapter = new SQLiteDataAdapter(command);
+                    dataAdapter.Fill(resultTable);
+                }
+                catch (Exception ex)
+                {
+                    Utils.LogDB("ExecuteQuery", ex, commandText, "Không thể thực thi truy vấn.");
+                }
+                // Không đóng kết nối ở đây để có thể tiếp tục sử dụng cho các lệnh tiếp theo
+            }
+            return resultTable;
+        }
         public DataTable ExecuteQuery(string commandText, params SQLiteParameter[] parameters)
         {
             var resultTable = new DataTable();
@@ -502,28 +502,27 @@ namespace Quanlibanhang.Data
         {
             lock (LockDb)
             {
-                    var command = new SQLiteCommand(commandText, connection);
-                    command.ExecuteNonQuery();
                 try
                 {
-                    // Kiểm tra và mở kết nối nếu cần
+                    // Kiểm tra và mở kết nối nếu trạng thái chưa phải là Open
                     if (connection.State != ConnectionState.Open)
                     {
                         connection.Open();
                     }
 
-                    // Tạo và thực thi lệnh
+                    using (var command = new SQLiteCommand(commandText, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
 
-                    // Trả về true nếu thành công
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Utils.LogDB("ExecuteNonQuery", ex, commandText, "Không thể thực thi lệnh non-query.");
-                    // Trả về false nếu có lỗi
+                    // Ghi log lỗi nếu quá trình thực thi thất bại
+                    Utils.LogDB("ExecuteNonQuery", ex, commandText, "Không thể thực thi lệnh.");
                     return false;
                 }
-                // Không đóng kết nối ở đây để có thể tiếp tục sử dụng cho các lệnh tiếp theo
             }
         }
 
