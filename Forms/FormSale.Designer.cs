@@ -42,7 +42,7 @@
             uiLabel1 = new Sunny.UI.UILabel();
             uiTableLayoutPanel1 = new Sunny.UI.UITableLayoutPanel();
             lblCart = new Sunny.UI.UILabel();
-            uiDataGridView1 = new Sunny.UI.UIDataGridView();
+            dgvSale = new Sunny.UI.UIDataGridView();
             cChose = new DataGridViewCheckBoxColumn();
             cSTT = new DataGridViewTextBoxColumn();
             cProductName = new DataGridViewTextBoxColumn();
@@ -63,7 +63,7 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudQuantity).BeginInit();
             uiTableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)uiDataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvSale).BeginInit();
             uiPanel1.SuspendLayout();
             uiTableLayoutPanel2.SuspendLayout();
             SuspendLayout();
@@ -175,14 +175,14 @@
             uiTableLayoutPanel1.ColumnCount = 1;
             uiTableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             uiTableLayoutPanel1.Controls.Add(lblCart, 0, 1);
-            uiTableLayoutPanel1.Controls.Add(uiDataGridView1, 0, 2);
+            uiTableLayoutPanel1.Controls.Add(dgvSale, 0, 2);
             uiTableLayoutPanel1.Dock = DockStyle.Fill;
             uiTableLayoutPanel1.Location = new Point(0, 98);
             uiTableLayoutPanel1.Name = "uiTableLayoutPanel1";
             uiTableLayoutPanel1.RowCount = 3;
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 47F));
-            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 200F));
+            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             uiTableLayoutPanel1.Size = new Size(1112, 436);
             uiTableLayoutPanel1.TabIndex = 2;
             uiTableLayoutPanel1.TagString = null;
@@ -199,12 +199,12 @@
             lblCart.Text = "Giỏ Hàng";
             lblCart.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // uiDataGridView1
+            // dgvSale
             // 
             dataGridViewCellStyle1.BackColor = Color.FromArgb(235, 243, 255);
-            uiDataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            uiDataGridView1.BackgroundColor = Color.White;
-            uiDataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvSale.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dgvSale.BackgroundColor = Color.White;
+            dgvSale.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(80, 160, 255);
             dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 12F);
@@ -212,10 +212,10 @@
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            uiDataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            uiDataGridView1.ColumnHeadersHeight = 32;
-            uiDataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            uiDataGridView1.Columns.AddRange(new DataGridViewColumn[] { cChose, cSTT, cProductName, cQty, cUnitPrice, cLineTotal });
+            dgvSale.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dgvSale.ColumnHeadersHeight = 32;
+            dgvSale.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvSale.Columns.AddRange(new DataGridViewColumn[] { cChose, cSTT, cProductName, cQty, cUnitPrice, cLineTotal });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = SystemColors.Window;
             dataGridViewCellStyle3.Font = new Font("Microsoft Sans Serif", 12F);
@@ -223,13 +223,13 @@
             dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-            uiDataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
-            uiDataGridView1.Dock = DockStyle.Fill;
-            uiDataGridView1.EnableHeadersVisualStyles = false;
-            uiDataGridView1.Font = new Font("Microsoft Sans Serif", 12F);
-            uiDataGridView1.GridColor = Color.FromArgb(80, 160, 255);
-            uiDataGridView1.Location = new Point(3, 80);
-            uiDataGridView1.Name = "uiDataGridView1";
+            dgvSale.DefaultCellStyle = dataGridViewCellStyle3;
+            dgvSale.Dock = DockStyle.Fill;
+            dgvSale.EnableHeadersVisualStyles = false;
+            dgvSale.Font = new Font("Microsoft Sans Serif", 12F);
+            dgvSale.GridColor = Color.FromArgb(80, 160, 255);
+            dgvSale.Location = new Point(3, 80);
+            dgvSale.Name = "dgvSale";
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = Color.FromArgb(235, 243, 255);
             dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 12F);
@@ -237,15 +237,15 @@
             dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(80, 160, 255);
             dataGridViewCellStyle4.SelectionForeColor = Color.White;
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            uiDataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            uiDataGridView1.RowHeadersWidth = 51;
+            dgvSale.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dgvSale.RowHeadersWidth = 51;
             dataGridViewCellStyle5.BackColor = Color.White;
             dataGridViewCellStyle5.Font = new Font("Microsoft Sans Serif", 12F);
-            uiDataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle5;
-            uiDataGridView1.SelectedIndex = -1;
-            uiDataGridView1.Size = new Size(1106, 353);
-            uiDataGridView1.StripeOddColor = Color.FromArgb(235, 243, 255);
-            uiDataGridView1.TabIndex = 1;
+            dgvSale.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dgvSale.SelectedIndex = -1;
+            dgvSale.Size = new Size(1106, 353);
+            dgvSale.StripeOddColor = Color.FromArgb(235, 243, 255);
+            dgvSale.TabIndex = 1;
             // 
             // cChose
             // 
@@ -298,7 +298,7 @@
             uiPanel1.ForeColor = Color.White;
             uiPanel1.ForeDisableColor = Color.White;
             uiPanel1.Location = new Point(0, 357);
-            uiPanel1.Margin = new Padding(0);
+            uiPanel1.Margin = new Padding(10);
             uiPanel1.MinimumSize = new Size(1, 1);
             uiPanel1.Name = "uiPanel1";
             uiPanel1.RectColor = Color.White;
@@ -316,6 +316,7 @@
             btnCart.Location = new Point(0, 0);
             btnCart.MinimumSize = new Size(1, 1);
             btnCart.Name = "btnCart";
+            btnCart.Padding = new Padding(10);
             btnCart.Size = new Size(164, 52);
             btnCart.TabIndex = 0;
             btnCart.Text = "Xóa khỏi giỏ";
@@ -469,7 +470,7 @@
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)nudQuantity).EndInit();
             uiTableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)uiDataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvSale).EndInit();
             uiPanel1.ResumeLayout(false);
             uiTableLayoutPanel2.ResumeLayout(false);
             ResumeLayout(false);
@@ -486,7 +487,7 @@
         private Sunny.UI.UILabel uiLabel1;
         private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel1;
         private Sunny.UI.UILabel lblCart;
-        private Sunny.UI.UIDataGridView uiDataGridView1;
+        private Sunny.UI.UIDataGridView dgvSale;
         private Sunny.UI.UIPanel uiPanel1;
         private Sunny.UI.UIButton btnCart;
         private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel2;
