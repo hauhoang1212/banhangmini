@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 
-namespace QLBanHang.Helpers
+namespace Quanlibanhang.Helpers
 {
     public class Utils
     {
