@@ -16,5 +16,10 @@ namespace Quanlibanhang
         {
             InitializeComponent();
         }
+
+        private void FormSale_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
