@@ -17,11 +17,18 @@ namespace Quanlibanhang
             InitializeComponent();
         }
 
-        private void uiButton1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            /////
-            ///
 
+        }
+
+        private void uiipTextBox1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uiTableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }

@@ -75,6 +75,7 @@
             uiTableLayoutPanel1.Size = new Size(800, 450);
             uiTableLayoutPanel1.TabIndex = 0;
             uiTableLayoutPanel1.TagString = null;
+            uiTableLayoutPanel1.Paint += uiTableLayoutPanel1_Paint;
             // 
             // uiPanel1
             // 
@@ -239,7 +240,6 @@
             uiButton1.TabIndex = 0;
             uiButton1.Text = "Thêm";
             uiButton1.TipsFont = new Font("Microsoft Sans Serif", 9F);
-            uiButton1.Click += uiButton1_Click;
             // 
             // uiButton4
             // 
