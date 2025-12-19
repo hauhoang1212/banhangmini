@@ -20,7 +20,7 @@ namespace Quanlibanhang.Data
 
         public SQLiteUtils()
         {
-            string defaultDbPath = $"{DataFolder}\\DB\\QLBH.db";
+            string defaultDbPath = $"{DataFolder}DB\\QLBH.db";
             string jsonFilePath = $"{DataFolder}\\DB\\QLBH.json";
 
             try
@@ -502,6 +502,8 @@ namespace Quanlibanhang.Data
         {
             lock (LockDb)
             {
+                    var command = new SQLiteCommand(commandText, connection);
+                    command.ExecuteNonQuery();
                 try
                 {
                     // Kiểm tra và mở kết nối nếu cần
@@ -511,8 +513,6 @@ namespace Quanlibanhang.Data
                     }
 
                     // Tạo và thực thi lệnh
-                    var command = new SQLiteCommand(commandText, connection);
-                    command.ExecuteNonQuery();
 
                     // Trả về true nếu thành công
                     return true;
