@@ -211,6 +211,7 @@
             txtCategoryName.TabIndex = 3;
             txtCategoryName.TextAlignment = ContentAlignment.MiddleLeft;
             txtCategoryName.Watermark = "";
+
             // 
             // uiTableLayoutPanel2
             // 
@@ -345,6 +346,7 @@
             btnFilter.TabIndex = 2;
             btnFilter.Text = "Lọc";
             btnFilter.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnFilter.Click += btnFilter_Click;
             // 
             // txtSearch
             // 
@@ -360,6 +362,7 @@
             txtSearch.TabIndex = 3;
             txtSearch.TextAlignment = ContentAlignment.MiddleLeft;
             txtSearch.Watermark = "";
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // uiLabel4
             // 

@@ -40,7 +40,6 @@
             menuItemManageProduct = new ToolStripMenuItem();
             nghiệpVụToolStripMenuItem = new ToolStripMenuItem();
             menuItemSale = new ToolStripMenuItem();
-            button1 = new Button();
             tableLayoutPanel1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
@@ -53,7 +52,6 @@
             tableLayoutPanel1.Controls.Add(statusStrip1, 0, 4);
             tableLayoutPanel1.Controls.Add(uiLabel1, 0, 0);
             tableLayoutPanel1.Controls.Add(menuStrip1, 0, 1);
-            tableLayoutPanel1.Controls.Add(button1, 0, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -154,16 +152,6 @@
             menuItemSale.Text = "Bán hàng";
             menuItemSale.Click += menuItemSale_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(3, 82);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 3;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -196,6 +184,5 @@
         private ToolStripMenuItem menuItemManageProduct;
         private ToolStripMenuItem nghiệpVụToolStripMenuItem;
         private ToolStripMenuItem menuItemSale;
-        private Button button1;
     }
 }

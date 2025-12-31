@@ -1,4 +1,6 @@
-﻿namespace Quanlibanhang
+﻿using Quanlibanhang.Forms;
+
+namespace Quanlibanhang
 {
     public partial class FormMain : Form
     {
@@ -40,11 +42,10 @@
 
         private void menuItemManageProduct_Click(object sender, EventArgs e)
         {
-            // 1. Khởi tạo Form
             FormProduct frmProduct = new FormProduct();
 
             // 2. Tùy chọn: Thiết lập MDI Parent
-            // frmProduct.MdiParent = this;
+            // frmSale.MdiParent = this;
 
             // 3. Hiển thị Form
             frmProduct.Show();
