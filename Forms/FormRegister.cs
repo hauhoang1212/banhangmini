@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Quanlibanhang.Forms
 {
-    
+
     public partial class FormRegister : Form
     {
         SQLiteUtils db = new SQLiteUtils();
@@ -63,6 +63,17 @@ namespace Quanlibanhang.Forms
                 db.CloseConnection();
             }
         }
+
+        private void btnOpenLogin_Click(object sender, EventArgs e)
+        {
+            // 1. Khởi tạo Form Đăng ký
+            FormLogin frmReg = new FormLogin();
+
+            // 2. Hiển thị Form Đăng ký dưới dạng cửa sổ hội thoại
+            // Dùng ShowDialog để người dùng quay lại sau khi đăng ký xong
+            frmReg.ShowDialog();
+            this.Close();
+        }
     }
-    }
+}
 

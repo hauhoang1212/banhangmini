@@ -541,5 +541,7 @@ VALUES('{pid}','{name}',{price.ToString(CultureInfo.InvariantCulture)},'{catId}'
                 Utils.LogDB("ImportProductsFromCsv", ex);
             }
         }
+
+       
     }
 }

@@ -17,7 +17,17 @@ namespace Quanlibanhang.Data
         private static readonly string DataFolder = Application.StartupPath;
         private string dbconnectionString;
         private SQLiteConnection connection;
-
+        // Thêm hàm này vào SQLiteUtils.cs hoặc gọi trực tiếp trong FormMain
+        public DataTable GetRevenueData()
+        {
+            string sql = @"
+                SELECT strftime('%d/%m', OrderDate) as Ngay, SUM(TotalAmount) as DoanhThu 
+                FROM Orders 
+                WHERE strftime('%m', OrderDate) = strftime('%m', 'now')
+                GROUP BY Ngay
+                ORDER BY OrderDate ASC LIMIT 7;"; // Lấy 7 ngày gần nhất
+            return ExecuteQuery(sql);
+        }
         public SQLiteUtils()
         {
             string defaultDbPath = $"{DataFolder}DB\\QLBH.db";

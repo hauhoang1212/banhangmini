@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new TableLayoutPanel();
             statusStrip1 = new StatusStrip();
-            toolStripStatusLabel1 = new ToolStripStatusLabel();
+            lblStatus = new ToolStripStatusLabel();
+            lblTime = new ToolStripStatusLabel();
             uiLabel1 = new Sunny.UI.UILabel();
             menuStrip1 = new MenuStrip();
             hệThốngToolStripMenuItem = new ToolStripMenuItem();
@@ -40,6 +42,9 @@
             menuItemManageProduct = new ToolStripMenuItem();
             nghiệpVụToolStripMenuItem = new ToolStripMenuItem();
             menuItemSale = new ToolStripMenuItem();
+            lblUser = new Label();
+            chartRevenue = new Sunny.UI.UIBarChart();
+            timerSystem = new System.Windows.Forms.Timer(components);
             tableLayoutPanel1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
@@ -52,33 +57,45 @@
             tableLayoutPanel1.Controls.Add(statusStrip1, 0, 4);
             tableLayoutPanel1.Controls.Add(uiLabel1, 0, 0);
             tableLayoutPanel1.Controls.Add(menuStrip1, 0, 1);
+            tableLayoutPanel1.Controls.Add(lblUser, 0, 3);
+            tableLayoutPanel1.Controls.Add(chartRevenue, 0, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 5;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 163F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 210F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
             tableLayoutPanel1.Size = new Size(875, 494);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // statusStrip1
             // 
+            statusStrip1.Dock = DockStyle.Fill;
             statusStrip1.ImageScalingSize = new Size(20, 20);
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1 });
-            statusStrip1.Location = new Point(0, 468);
+            statusStrip1.Items.AddRange(new ToolStripItem[] { lblStatus, lblTime });
+            statusStrip1.Location = new Point(0, 466);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(875, 26);
+            statusStrip1.Size = new Size(875, 28);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
-            // toolStripStatusLabel1
+            // lblStatus
             // 
-            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(81, 20);
-            toolStripStatusLabel1.Text = "Hoạt động";
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(818, 22);
+            lblStatus.Spring = true;
+            lblStatus.Text = "Hoạt động";
+            lblStatus.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblTime
+            // 
+            lblTime.Name = "lblTime";
+            lblTime.Size = new Size(42, 22);
+            lblTime.Text = "Time";
+            lblTime.Click += lblTime_Click;
             // 
             // uiLabel1
             // 
@@ -152,15 +169,49 @@
             menuItemSale.Text = "Bán hàng";
             menuItemSale.Click += menuItemSale_Click;
             // 
+            // lblUser
+            // 
+            lblUser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblUser.AutoSize = true;
+            lblUser.Location = new Point(2, 438);
+            lblUser.Margin = new Padding(2);
+            lblUser.Name = "lblUser";
+            lblUser.Size = new Size(871, 26);
+            lblUser.TabIndex = 3;
+            lblUser.Text = "...";
+            lblUser.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // chartRevenue
+            // 
+            chartRevenue.Anchor = AnchorStyles.None;
+            chartRevenue.Font = new Font("Microsoft Sans Serif", 12F);
+            chartRevenue.LegendFont = new Font("Microsoft Sans Serif", 9F);
+            chartRevenue.Location = new Point(42, 82);
+            chartRevenue.MinimumSize = new Size(1, 1);
+            chartRevenue.Name = "chartRevenue";
+            chartRevenue.Size = new Size(791, 329);
+            chartRevenue.SubFont = new Font("Microsoft Sans Serif", 9F);
+            chartRevenue.TabIndex = 4;
+            chartRevenue.Text = "Báo cáo doanh thu tuần";
+            chartRevenue.Click += chartRevenue_Click;
+            // 
+            // timerSystem
+            // 
+            timerSystem.Enabled = true;
+            timerSystem.Tick += timerSystem_Tick;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(875, 494);
             Controls.Add(tableLayoutPanel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MainMenuStrip = menuStrip1;
             Name = "FormMain";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
+            Load += FormMain_Load;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             statusStrip1.ResumeLayout(false);
@@ -175,7 +226,7 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Sunny.UI.UILabel uiLabel1;
         private StatusStrip statusStrip1;
-        private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripStatusLabel lblStatus;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem hệThốngToolStripMenuItem;
         private ToolStripMenuItem menuItemExit;
@@ -184,5 +235,9 @@
         private ToolStripMenuItem menuItemManageProduct;
         private ToolStripMenuItem nghiệpVụToolStripMenuItem;
         private ToolStripMenuItem menuItemSale;
+        private Label lblUser;
+        private ToolStripStatusLabel lblTime;
+        private System.Windows.Forms.Timer timerSystem;
+        private Sunny.UI.UIBarChart chartRevenue;
     }
 }

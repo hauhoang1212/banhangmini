@@ -19,12 +19,16 @@ namespace Quanlibanhang
         public FormCategory()
         {
             InitializeComponent();
-
-            // ErrorProvider
+            SetupComponents();
+            LoadCategories();
+        }
+        private void SetupComponents()
+        {
+            // Cấu hình ErrorProvider
             ep.BlinkStyle = ErrorBlinkStyle.NeverBlink;
             ep.ContainerControl = this;
 
-            // DataGridView: chỉ cho tick checkbox
+            // Cấu hình DataGridView
             dgvCategories.ReadOnly = false;
             foreach (DataGridViewColumn col in dgvCategories.Columns)
             {
@@ -33,81 +37,67 @@ namespace Quanlibanhang
             dgvCategories.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvCategories.MultiSelect = false;
 
-            // Ban đầu: khóa input (màu xám)
+            // Trạng thái ban đầu
             SetEditingState(false);
-
-            // Load dữ liệu
-            LoadCategories();
-
-            // Khi mới vào form: nếu có data thì đổ dòng đầu lên input (nhưng vẫn khóa)
-            if (dgvCategories.Rows.Count > 0 && !dgvCategories.Rows[0].IsNewRow)
-            {
-                dgvCategories.Rows[0].Selected = true;
-                FillInputsFromRow(dgvCategories.Rows[0]);
-            }
-
-            // (Nếu bạn có nút export CSV trong UI thì hãy gán Click gọi ExportCsv())
-            // btnExportCsv.Click += (s, e) => ExportCsv();
         }
-
-        // =========================
-        // LOAD
-        // =========================
         private void LoadCategories(string keyword = "")
         {
             try
             {
                 dgvCategories.Rows.Clear();
-
-                string sql = @"SELECT CategoryId, Name, IFNULL(Description,'') AS Description
-                               FROM Categories
-                               WHERE 1=1";
+                string sql = "SELECT CategoryId, Name, IFNULL(Description,'') AS Description FROM Categories WHERE 1=1";
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
-                    keyword = keyword.Trim().Replace("'", "''");
-                    sql += $" AND (Name LIKE '%{keyword}%' OR Description LIKE '%{keyword}%')";
+                    // Chống SQL Injection cơ bản bằng cách replace dấu nháy đơn
+                    string safeKeyword = keyword.Replace("'", "''");
+                    sql += $" AND (Name LIKE '%{safeKeyword}%' OR CategoryId LIKE '%{safeKeyword}%' OR Description LIKE '%{safeKeyword}%')";
                 }
 
-                sql += " ORDER BY CategoryId";
-
+                sql += " ORDER BY CategoryId ASC";
                 DataTable dt = db.ExecuteQuery(sql);
 
-                int stt = 1;
-                foreach (DataRow r in dt.Rows)
+                if (dt != null)
                 {
-                    dgvCategories.Rows.Add(
-                        false,                 // cchoose
-                        stt++,                 // sSTT
-                        r["CategoryId"],       // cCategoryId
-                        r["Name"],             // cName
-                        r["Description"]       // cDescription
-                    );
+                    int stt = 1;
+                    foreach (DataRow r in dt.Rows)
+                    {
+                        dgvCategories.Rows.Add(
+                            false,
+                            stt++,
+                            r["CategoryId"],
+                            r["Name"],
+                            r["Description"]
+                        );
+                    }
+                }
+
+                // Nếu có data, tự động chọn dòng đầu
+                if (dgvCategories.Rows.Count > 0)
+                {
+                    FillInputsFromRow(dgvCategories.Rows[0]);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi LoadCategories: " + ex.Message);
+                MessageBox.Show("Lỗi Load dữ liệu: " + ex.Message);
                 Utils.LogDB("LoadCategories", ex);
             }
         }
-
-        // =========================
-        // UI STATE (khóa/mở + màu xám)
-        // =========================
         private void SetEditingState(bool editing)
         {
-            // Input
+            // Mở/Khóa các ô nhập liệu
             txtCategoryId.Enabled = editing;
             txtCategoryName.Enabled = editing;
             txtDescription.Enabled = editing;
 
-            // Màu xám khi disabled (Sunny.UI vẫn nhìn rõ)
-            ApplyTextBoxStyle(txtCategoryId, editing);
-            ApplyTextBoxStyle(txtCategoryName, editing);
-            ApplyTextBoxStyle(txtDescription, editing);
+            // Đổi màu nền để người dùng dễ nhận biết (SunnyUI FillColor hoặc BackColor)
+            Color bgColor = editing ? Color.White : Color.Gainsboro;
+            txtCategoryId.FillColor = bgColor;
+            txtCategoryName.FillColor = bgColor;
+            txtDescription.FillColor = bgColor;
 
-            // Buttons
+            // Điều khiển các nút bấm
             btnSave.Enabled = editing;
             btnCancel.Enabled = editing;
 
@@ -115,154 +105,131 @@ namespace Quanlibanhang
             btnEdit.Enabled = !editing;
             btnDelete.Enabled = !editing;
 
-            // Search vẫn dùng được
+            // Khóa search khi đang soạn thảo
             txtSearch.Enabled = !editing;
             btnFilter.Enabled = !editing;
         }
-
-        private void ApplyTextBoxStyle(dynamic tb, bool enabled)
-        {
-            try
-            {
-                // Sunny.UI UITextBox có FillColor
-                tb.FillColor = enabled ? Color.White : Color.Gainsboro;
-            }
-            catch
-            {
-                // fallback nếu control khác
-                try { tb.BackColor = enabled ? Color.White : SystemColors.Control; } catch { }
-            }
-        }
-
-        private void ClearInput()
-        {
-            txtCategoryId.Clear();
-            txtCategoryName.Clear();
-            txtDescription.Clear();
-            ep.SetError(txtCategoryId, "");
-            ep.SetError(txtCategoryName, "");
-        }
-
         private void FillInputsFromRow(DataGridViewRow row)
         {
-            if (row == null) return;
-
+            if (row == null || row.IsNewRow) return;
             txtCategoryId.Text = row.Cells["cCategoryId"].Value?.ToString() ?? "";
             txtCategoryName.Text = row.Cells["cName"].Value?.ToString() ?? "";
             txtDescription.Text = row.Cells["cDescription"].Value?.ToString() ?? "";
         }
 
-        // =========================
-        // VALIDATE (ErrorProvider)
-        // =========================
         private bool ValidateInput()
         {
+            ep.Clear();
             bool ok = true;
-            ep.SetError(txtCategoryId, "");
-            ep.SetError(txtCategoryName, "");
 
-            string id = txtCategoryId.Text.Trim();
-            string name = txtCategoryName.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(txtCategoryId.Text))
             {
-                ep.SetError(txtCategoryId, "Vui lòng nhập ID loại (vd: D01)");
+                ep.SetError(txtCategoryId, "Vui lòng nhập Mã loại!");
+                ok = false;
+            }
+            if (string.IsNullOrWhiteSpace(txtCategoryName.Text))
+            {
+                ep.SetError(txtCategoryName, "Vui lòng nhập Tên loại!");
                 ok = false;
             }
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                ep.SetError(txtCategoryName, "Vui lòng nhập Tên loại");
-                ok = false;
-            }
-
-            if (!ok) MessageBox.Show("Vui lòng nhập đầy đủ thông tin bắt buộc!");
+            if (!ok) MessageBox.Show("Vui lòng nhập đầy đủ các thông tin bắt buộc!");
             return ok;
         }
-
         // =========================
-        // EVENTS
+        // XỬ LÝ SỰ KIỆN NÚT BẤM
         // =========================
-        private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // không cần code, tick checkbox để chọn dòng
-        }
 
-        private void dgvCategories_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-            var row = dgvCategories.Rows[e.RowIndex];
-            if (row.IsNewRow) return;
-
-            FillInputsFromRow(row);
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            // Lọc realtime
-            LoadCategories(txtSearch.Text.Trim());
-        }
-
-        private void btnFilter_Click(object sender, EventArgs e)
-        {
-            LoadCategories(txtSearch.Text.Trim());
-        }
-
-        // =========================
-        // ADD / EDIT / CANCEL
-        // =========================
         private void btnAdd_Click(object sender, EventArgs e)
         {
             isAdding = true;
-            ClearInput();
+            txtCategoryId.Clear();
+            txtCategoryName.Clear();
+            txtDescription.Clear();
             SetEditingState(true);
             txtCategoryId.Focus();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            DataGridViewRow selectedRow = GetFirstCheckedRow();
+            // Lấy dòng đang được tích checkbox
+            DataGridViewRow selectedRow = null;
+            foreach (DataGridViewRow row in dgvCategories.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["cchoose"].Value))
+                {
+                    selectedRow = row;
+                    break;
+                }
+            }
+
             if (selectedRow == null)
             {
-                MessageBox.Show("Vui lòng tích chọn (v) 1 dòng để sửa!");
+                MessageBox.Show("Vui lòng tích chọn (v) một dòng để sửa!");
                 return;
             }
 
             FillInputsFromRow(selectedRow);
-
             isAdding = false;
             SetEditingState(true);
 
-            // Không cho sửa khóa chính khi sửa (đúng chuẩn)
+            // Không cho sửa Mã (Khóa chính) khi đang Edit
             txtCategoryId.Enabled = false;
-            ApplyTextBoxStyle(txtCategoryId, false);
-
+            txtCategoryId.FillColor = Color.Gainsboro;
             txtCategoryName.Focus();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // Thu thập các ID đã chọn
+            List<string> selectedIds = new List<string>();
+            foreach (DataGridViewRow row in dgvCategories.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["cchoose"].Value))
+                {
+                    selectedIds.Add(row.Cells["cCategoryId"].Value?.ToString());
+                }
+            }
+
+            if (selectedIds.Count == 0)
+            {
+                MessageBox.Show("Vui lòng tích chọn ít nhất một loại để xoá!");
+                return;
+            }
+
+            if (MessageBox.Show($"Bạn có chắc muốn xoá {selectedIds.Count} dòng đã chọn?", "Xác nhận",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                try
+                {
+                    int count = 0;
+                    foreach (string id in selectedIds)
+                    {
+                        // Kiểm tra ràng buộc (nếu có bảng Sản phẩm tham chiếu tới)
+                        DataTable dtCheck = db.ExecuteQuery($"SELECT 1 FROM Products WHERE CategoryId='{id}' LIMIT 1");
+                        if (dtCheck != null && dtCheck.Rows.Count > 0)
+                        {
+                            MessageBox.Show($"Không thể xóa mã {id} vì đang có sản phẩm thuộc loại này!");
+                            continue;
+                        }
+
+                        if (db.ExecuteNonQuery($"DELETE FROM Categories WHERE CategoryId='{id}'")) count++;
+                    }
+
+                    if (count > 0) MessageBox.Show($"Đã xoá thành công {count} dòng!");
+                    LoadCategories();
+                }
+                catch (Exception ex) { MessageBox.Show("Lỗi xoá: " + ex.Message); }
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            isAdding = false;
-            ClearInput();
-
-            // bỏ tick checkbox
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                if (!row.IsNewRow) row.Cells["cchoose"].Value = false;
-            }
-
+            ep.Clear();
             SetEditingState(false);
-
-            // đổ lại dòng đang select (nếu có)
-            if (dgvCategories.CurrentRow != null && !dgvCategories.CurrentRow.IsNewRow)
-            {
-                FillInputsFromRow(dgvCategories.CurrentRow);
-            }
+            if (dgvCategories.CurrentRow != null) FillInputsFromRow(dgvCategories.CurrentRow);
         }
 
-        // =========================
-        // SAVE (THÊM / SỬA)
-        // =========================
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateInput()) return;
@@ -274,539 +241,86 @@ namespace Quanlibanhang
             try
             {
                 string sql;
-
                 if (isAdding)
                 {
-                    // check trùng ID
-                    DataTable dtCheck = db.ExecuteQuery($"SELECT COUNT(*) FROM Categories WHERE CategoryId='{id}'");
-                    if (dtCheck.Rows.Count > 0 && Convert.ToInt32(dtCheck.Rows[0][0]) > 0)
+                    // Check trùng ID trước khi thêm
+                    DataTable dt = db.ExecuteQuery($"SELECT 1 FROM Categories WHERE CategoryId='{id}'");
+                    if (dt != null && dt.Rows.Count > 0)
                     {
-                        MessageBox.Show("ID loại đã tồn tại!");
+                        MessageBox.Show("Mã loại này đã tồn tại trong hệ thống!");
                         return;
                     }
-
-                    sql = $@"
-                        INSERT INTO Categories(CategoryId, Name, Description)
-                        VALUES('{id}', '{name}', '{desc}')
-                    ";
+                    sql = $"INSERT INTO Categories(CategoryId, Name, Description) VALUES('{id}', '{name}', '{desc}')";
                 }
                 else
                 {
-                    // Sửa theo ID
-                    sql = $@"
-                        UPDATE Categories
-                        SET Name='{name}', Description='{desc}'
-                        WHERE CategoryId='{id}'
-                    ";
+                    sql = $"UPDATE Categories SET Name='{name}', Description='{desc}' WHERE CategoryId='{id}'";
                 }
 
                 if (db.ExecuteNonQuery(sql))
                 {
-                    MessageBox.Show(isAdding ? "Thêm loại thành công!" : "Cập nhật loại thành công!");
-
-                    LoadCategories(txtSearch.Text.Trim());
-
-                    // reset trạng thái
-                    isAdding = false;
+                    MessageBox.Show("Lưu thành công!");
                     SetEditingState(false);
-
-                    // bỏ tick
-                    foreach (DataGridViewRow row in dgvCategories.Rows)
-                    {
-                        if (!row.IsNewRow) row.Cells["cchoose"].Value = false;
-                    }
-
-                    // chọn lại dòng vừa lưu
-                    SelectRowByCategoryId(id);
-                }
-                else
-                {
-                    MessageBox.Show("Lưu thất bại! Vui lòng xem log DB.");
+                    LoadCategories(txtSearch.Text);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi lưu: " + ex.Message);
+                MessageBox.Show("Lỗi lưu: " + ex.Message);
                 Utils.LogDB("Category_Save", ex);
             }
         }
-
-        private void SelectRowByCategoryId(string id)
+        // =========================
+        // SỰ KIỆN DATAGRIDVIEW
+        // =========================
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                if (row.IsNewRow) continue;
-                if ((row.Cells["cCategoryId"].Value?.ToString() ?? "") == id)
-                {
-                    row.Selected = true;
-                    dgvCategories.CurrentCell = row.Cells["cName"];
-                    FillInputsFromRow(row);
-                    return;
-                }
-            }
-
-            // nếu không thấy (ví dụ đang lọc) thì clear input
-            FillInputsFromRow(dgvCategories.CurrentRow);
+            LoadCategories(txtSearch.Text.Trim());
         }
 
-        // =========================
-        // DELETE (không xóa nếu còn Product)
-        // =========================
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void dgvCategories_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            List<string> ids = GetCheckedCategoryIds();
-            if (ids.Count == 0)
+            if (e.RowIndex >= 0 && !isAdding) // Không đổi input khi đang ở chế độ Thêm mới
             {
-                MessageBox.Show("Vui lòng tích chọn ít nhất 1 loại để xóa!");
-                return;
-            }
-
-            // kiểm tra ràng buộc Product thuộc Category
-            foreach (var idRaw in ids)
-            {
-                string id = idRaw.Replace("'", "''");
-                DataTable dt = db.ExecuteQuery($"SELECT COUNT(*) FROM Products WHERE CategoryID='{id}'");
-                int cnt = (dt.Rows.Count > 0) ? Convert.ToInt32(dt.Rows[0][0]) : 0;
-                if (cnt > 0)
-                {
-                    MessageBox.Show($"Không thể xóa loại {id} vì đang có {cnt} sản phẩm thuộc loại này!");
-                    return;
-                }
-            }
-
-            string msg = ids.Count == 1
-                ? $"Bạn có chắc muốn xóa loại {ids[0]} không?"
-                : $"Bạn có chắc muốn xóa {ids.Count} loại đã chọn không?";
-
-            if (MessageBox.Show(msg, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                return;
-
-            try
-            {
-                int success = 0;
-                foreach (var idRaw in ids)
-                {
-                    string id = idRaw.Replace("'", "''");
-                    if (db.ExecuteNonQuery($"DELETE FROM Categories WHERE CategoryId='{id}'"))
-                        success++;
-                }
-
-                MessageBox.Show($"Đã xóa {success} loại!");
-                LoadCategories(txtSearch.Text.Trim());
-                btnCancel_Click(null, null);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi xóa: " + ex.Message);
-                Utils.LogDB("Category_Delete", ex);
+                FillInputsFromRow(dgvCategories.Rows[e.RowIndex]);
             }
         }
-
-        // =========================
-        // EXPORT CSV (Advanced)
-        // =========================
-        private void ExportCsv()
+        private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            try
-            {
-                using (var sfd = new SaveFileDialog())
-                {
-                    sfd.Filter = "CSV files (*.csv)|*.csv";
-                    sfd.FileName = $"Categories_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
-                    if (sfd.ShowDialog() != DialogResult.OK) return;
 
-                    var sb = new StringBuilder();
-                    sb.AppendLine("CategoryId,Name,Description");
-
-                    foreach (DataGridViewRow row in dgvCategories.Rows)
-                    {
-                        if (row.IsNewRow) continue;
-
-                        string id = (row.Cells["cCategoryId"].Value?.ToString() ?? "").Replace("\"", "\"\"");
-                        string name = (row.Cells["cName"].Value?.ToString() ?? "").Replace("\"", "\"\"");
-                        string desc = (row.Cells["cDescription"].Value?.ToString() ?? "").Replace("\"", "\"\"");
-
-                        sb.AppendLine($"\"{id}\",\"{name}\",\"{desc}\"");
-                    }
-
-                    File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
-                    MessageBox.Show("Xuất CSV thành công!");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi export CSV: " + ex.Message);
-                Utils.LogDB("Category_ExportCSV", ex);
-            }
         }
 
-        // =========================
-        // HELPERS: checkbox selection
-        // =========================
-        private DataGridViewRow GetFirstCheckedRow()
+        private void btnFilter_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                bool isChecked = row.Cells["cchoose"].Value != null
-                                 && Convert.ToBoolean(row.Cells["cchoose"].Value);
-
-                if (isChecked) return row;
-            }
-            return null;
-        }
-
-        private List<string> GetCheckedCategoryIds()
-        {
-            var ids = new List<string>();
-
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                bool isChecked = row.Cells["cchoose"].Value != null
-                                 && Convert.ToBoolean(row.Cells["cchoose"].Value);
-
-                if (isChecked)
-                {
-                    string id = row.Cells["cCategoryId"].Value?.ToString();
-                    if (!string.IsNullOrWhiteSpace(id))
-                        ids.Add(id.Trim());
-                }
-            }
-            return ids;
+            LoadCategories(txtSearch.Text.Trim());
         }
 
         private void btnExportCsv_Click(object sender, EventArgs e)
         {
             ExportCsv();
         }
-<<<<<<< Updated upstream
-=======
-        private void LoadCategories()
+        private void ExportCsv()
         {
             try
             {
-                dgvCategories.Rows.Clear();
-                string query = "SELECT * FROM Categories";
-
-                DataTable dt = db.ExecuteQuery(query);
-
-                if (dt != null)
+                using (var sfd = new SaveFileDialog { Filter = "CSV files (*.csv)|*.csv", FileName = $"Categories_{DateTime.Now:yyyyMMdd}.csv" })
                 {
-                    int stt = 1;
-                    foreach (DataRow dr in dt.Rows)
+                    if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        dgvCategories.Rows.Add(
-                          false,
-                                        stt++,
-                                        dr["CategoryID"],
-                                        dr["Name"],
-                                        dr["Description"]
-                                    );
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi hiển thị: " + ex.Message);
-            }
-        }
-
-
-        private bool ValidateInput()
-        {
-            if (string.IsNullOrWhiteSpace(txtCategoryName.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên danh mục!");
-                txtCategoryName.Focus();
-                return false;
-            }
-            return true;
-        }
-        private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-        private void dgvCategories_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0) // Kiểm tra người dùng có click vào hàng dữ liệu không
-            {
-                DataGridViewRow row = dgvCategories.Rows[e.RowIndex];
-
-                // Đưa ID vào TextBox ẩn hoặc biến tạm để dùng cho nút Xóa
-                txtCategoryId.Text = row.Cells["CategoryId"].Value?.ToString();
-                txtCategoryName.Text = row.Cells["Name"].Value?.ToString();
-                txtDescription.Text = row.Cells["Description"].Value?.ToString();
-            }
-        }
-
-        private void ControlButtons(bool isEditing)
-        {
-
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // 1. Kiểm tra bắt buộc nhập (Validation)
-                if (string.IsNullOrWhiteSpace(txtCategoryId.Text))
-                {
-                    MessageBox.Show("Vui lòng nhập Mã ID loại sản phẩm!", "Thông báo");
-                    txtCategoryId.Focus();
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(txtCategoryName.Text))
-                {
-                    MessageBox.Show("Vui lòng nhập Tên loại sản phẩm!", "Thông báo");
-                    txtCategoryName.Focus();
-                    return;
-                }
-
-                string id = txtCategoryId.Text.Trim();
-                string name = txtCategoryName.Text.Trim();
-                string description = txtDescription.Text.Trim();
-
-                SQLiteUtils db = new SQLiteUtils();
-
-                // 2. Kiểm tra trùng mã ID (Vì bạn đã đổi sang ID chữ)
-                string checkIdQuery = $"SELECT * FROM Categories WHERE CategoryId = '{id}'";
-                DataTable dtCheckId = db.ExecuteQuery(checkIdQuery);
-
-                if (dtCheckId != null && dtCheckId.Rows.Count > 0)
-                {
-                    MessageBox.Show("Mã ID loại này đã tồn tại, vui lòng nhập mã khác!");
-                    txtCategoryId.Focus();
-                    return;
-                }
-
-                // 3. Thực hiện Thêm vào Database
-                // Sử dụng ExecuteNonQuery thay vì ExecuteQuery cho lệnh INSERT
-                string query = $"INSERT INTO Categories (CategoryId, Name, Description) " +
-                               $"VALUES ('{id}', '{name}', '{description}')";
-
-                if (db.ExecuteNonQuery(query)) // Hàm này sẽ tự động mở kết nối
-                {
-                    MessageBox.Show("Đã thêm danh mục thành công!");
-
-                    // 4. Xóa trắng form sau khi thêm
-                    txtCategoryId.Clear();
-                    txtCategoryName.Clear();
-                    txtDescription.Clear();
-
-                    // 5. Tải lại danh sách
-                    LoadCategories();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message);
-            }
-
-        }
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            // Tìm dòng được tích chọn (Checkbox)
-            DataGridViewRow selectedRow = null;
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["cchoose"].Value) == true)
-                {
-                    selectedRow = row;
-                    break; // Lấy dòng đầu tiên được tích
-                }
-            }
-
-            if (selectedRow != null)
-            {
-                // Đưa dữ liệu từ dòng tích chọn lên các ô nhập liệu
-                txtCategoryId.Text = selectedRow.Cells["cCategoryId"].Value?.ToString();
-                txtCategoryName.Text = selectedRow.Cells["cName"].Value?.ToString();
-                txtDescription.Text = selectedRow.Cells["cDescription"].Value?.ToString();
-
-                // Thiết lập trạng thái
-                isAdding = false; // Đang ở chế độ Sửa
-                txtCategoryId.Enabled = false;
-                txtCategoryName.Enabled = false;// Không cho sửa ID (khóa chính)
-                txtDescription.Enabled = true;
-                txtCategoryName.Focus();
-            }
-            else
-            {
-                MessageBox.Show("Vui lòng tích chọn (v) vào một dòng để sửa!", "Thông báo");
-            }
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            // Xóa sạch nội dung trong các ô nhập dữ liệu
-            txtCategoryId.Clear();
-            txtCategoryName.Clear();
-            txtDescription.Clear();
-
-            // Reset lại trạng thái ban đầu
-            txtCategoryId.Enabled = true;
-            txtCategoryName.Enabled = true;
-            isAdding = false;
-
-            // Bỏ tích tất cả trên bảng (nếu muốn)
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                row.Cells["cchoose"].Value = false;
-            }
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            string id = txtCategoryId.Text.Trim();
-            string name = txtCategoryName.Text.Trim();
-            string desc = txtDescription.Text.Trim();
-
-            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ Mã và Tên loại!");
-                return;
-            }
-
-            try
-            {
-                string sql = "";
-                if (isAdding) // Nếu là chế độ Thêm mới
-                {
-                    // Kiểm tra trùng ID trước khi chèn
-                    string checkSql = $"SELECT COUNT(*) FROM Categories WHERE CategoryId = '{id}'";
-                    DataTable dt = db.ExecuteQuery(checkSql);
-                    if (dt != null && Convert.ToInt32(dt.Rows[0][0]) > 0)
-                    {
-                        MessageBox.Show("Mã loại này đã tồn tại!");
-                        return;
-                    }
-                    sql = $"INSERT INTO Categories (CategoryId, Name, Description) VALUES ('{id}', '{name}', '{desc}')";
-                }
-                else // Nếu là chế độ Sửa
-                {
-                    sql = $"UPDATE Categories SET Name = '{name}', Description = '{desc}' WHERE CategoryId = '{id}'";
-                }
-
-                if (db.ExecuteNonQuery(sql))
-                {
-                    MessageBox.Show(isAdding ? "Thêm mới thành công!" : "Cập nhật thành công!");
-                    LoadCategories(); // Load lại bảng để thấy dữ liệu mới
-                    btnCancel_Click(null, null); // Xóa trắng form sau khi lưu
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi lưu dữ liệu: " + ex.Message);
-            }
-        }
-
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            // 1. Thu thập danh sách các ID đã được tích chọn
-            List<string> selectedIds = new List<string>();
-
-            foreach (DataGridViewRow row in dgvCategories.Rows)
-            {
-                // Kiểm tra giá trị của cột checkbox (cchoose)
-                bool isChecked = Convert.ToBoolean(row.Cells["cchoose"].Value);
-                if (isChecked)
-                {
-                    string id = row.Cells["cCategoryId"].Value?.ToString();
-                    if (!string.IsNullOrEmpty(id))
-                    {
-                        selectedIds.Add(id);
-                    }
-                }
-            }
-
-            // 2. Kiểm tra nếu chưa tích dòng nào
-            if (selectedIds.Count == 0)
-            {
-                MessageBox.Show("Vui lòng tích chọn ít nhất một loại sản phẩm để xoá!");
-                return;
-            }
-
-            // 3. Xác nhận và thực hiện xoá
-            string message = selectedIds.Count == 1
-                ? $"Bạn có chắc muốn xoá mã {selectedIds[0]} không?"
-                : $"Bạn có chắc muốn xoá {selectedIds.Count} dòng đã chọn không?";
-
-            if (MessageBox.Show(message, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-            {
-                try
-                {
-                    int successCount = 0;
-                    foreach (string idXoa in selectedIds)
-                    {
-                        string sql = $"DELETE FROM Categories WHERE CategoryId = '{idXoa}'";
-                        if (db.ExecuteNonQuery(sql)) // Sử dụng hàm từ SQLiteUtils
+                        var sb = new StringBuilder();
+                        sb.AppendLine("CategoryId,Name,Description");
+                        foreach (DataGridViewRow row in dgvCategories.Rows)
                         {
-                            successCount++;
+                            if (row.IsNewRow) continue;
+                            sb.AppendLine($"\"{row.Cells["cCategoryId"].Value}\",\"{row.Cells["cName"].Value}\",\"{row.Cells["cDescription"].Value}\"");
                         }
-                    }
-
-                    if (successCount > 0)
-                    {
-                        MessageBox.Show($"Đã xoá thành công {successCount} dòng!");
-                        LoadCategories(); // Tải lại bảng 
-
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi thực thi: " + ex.Message);
-                }
-            }
-        }
-        private void SearchCategory()
-        {
-            try
-            {
-                string keyword = txtSearch.Text.Trim();
-                dgvCategories.Rows.Clear();
-
-                // Truy vấn tìm kiếm theo Tên hoặc Mô tả
-                string query = $@"SELECT * FROM Categories 
-                          WHERE Name LIKE '%{keyword}%' 
-                          OR Description LIKE '%{keyword}%'";
-
-                DataTable dt = db.ExecuteQuery(query);
-
-                if (dt != null)
-                {
-                    int stt = 1;
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        dgvCategories.Rows.Add(
-                            false,
-                            stt++,
-                            dr["CategoryID"],
-                            dr["Name"],
-                            dr["Description"]
-                        );
+                        File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                        MessageBox.Show("Xuất CSV thành công!");
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message);
-                Utils.LogDB("SearchCategory", ex); // Ghi log lỗi vào DB log
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi xuất CSV: " + ex.Message); }
         }
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            SearchCategory();
-        }
-
-        private void btnFilter_Click(object sender, EventArgs e)
-        {
-            SearchCategory();
-        }
-
-       
->>>>>>> Stashed changes
     }
 }
+

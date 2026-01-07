@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Quanlibanhang.Forms
 {
-    internal class Session
+    public static class Session
     {
+        public static string FullName { get; set; }
+        public static string Username { get; set; }
     }
 }

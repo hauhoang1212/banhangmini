@@ -445,7 +445,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(875, 710);
             Controls.Add(uiTableLayoutPanel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "FormCategory";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "FormCategory";
             uiTableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);

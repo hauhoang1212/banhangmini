@@ -36,7 +36,7 @@
             uiLabel3 = new Sunny.UI.UILabel();
             txtUserLogin = new Sunny.UI.UITextBox();
             uiTableLayoutPanel3 = new Sunny.UI.UITableLayoutPanel();
-            uiButton1 = new Sunny.UI.UIButton();
+            btnOpenRegister = new Sunny.UI.UIButton();
             btnLogin = new Sunny.UI.UIButton();
             uiTableLayoutPanel1.SuspendLayout();
             uiTableLayoutPanel2.SuspendLayout();
@@ -155,7 +155,7 @@
             uiTableLayoutPanel3.ColumnCount = 2;
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 320F));
-            uiTableLayoutPanel3.Controls.Add(uiButton1, 0, 0);
+            uiTableLayoutPanel3.Controls.Add(btnOpenRegister, 0, 0);
             uiTableLayoutPanel3.Controls.Add(btnLogin, 1, 0);
             uiTableLayoutPanel3.Dock = DockStyle.Fill;
             uiTableLayoutPanel3.Location = new Point(0, 214);
@@ -167,18 +167,19 @@
             uiTableLayoutPanel3.TabIndex = 2;
             uiTableLayoutPanel3.TagString = null;
             // 
-            // uiButton1
+            // btnOpenRegister
             // 
-            uiButton1.Anchor = AnchorStyles.None;
-            uiButton1.FillColor = Color.Silver;
-            uiButton1.Font = new Font("Microsoft Sans Serif", 12F);
-            uiButton1.Location = new Point(95, 23);
-            uiButton1.MinimumSize = new Size(1, 1);
-            uiButton1.Name = "uiButton1";
-            uiButton1.Size = new Size(125, 44);
-            uiButton1.TabIndex = 0;
-            uiButton1.Text = "Đăng kí";
-            uiButton1.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnOpenRegister.Anchor = AnchorStyles.None;
+            btnOpenRegister.FillColor = Color.Silver;
+            btnOpenRegister.Font = new Font("Microsoft Sans Serif", 12F);
+            btnOpenRegister.Location = new Point(95, 23);
+            btnOpenRegister.MinimumSize = new Size(1, 1);
+            btnOpenRegister.Name = "btnOpenRegister";
+            btnOpenRegister.Size = new Size(125, 44);
+            btnOpenRegister.TabIndex = 0;
+            btnOpenRegister.Text = "Đăng kí";
+            btnOpenRegister.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnOpenRegister.Click += btnOpenRegister_Click_1;
             // 
             // btnLogin
             // 
@@ -193,14 +194,14 @@
             btnLogin.TipsFont = new Font("Microsoft Sans Serif", 9F);
             btnLogin.Click += btnLogin_Click;
             // 
-            // UserSession
+            // FormLogin
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(973, 452);
             Controls.Add(uiTableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            Name = "UserSession";
+            Name = "FormLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "UserSession";
             uiTableLayoutPanel1.ResumeLayout(false);
@@ -219,7 +220,7 @@
         private Sunny.UI.UILabel uiLabel3;
         private Sunny.UI.UITextBox txtUserLogin;
         private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel3;
-        private Sunny.UI.UIButton uiButton1;
+        private Sunny.UI.UIButton btnOpenRegister;
         private Sunny.UI.UIButton btnLogin;
     }
 }

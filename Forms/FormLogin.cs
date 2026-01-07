@@ -20,7 +20,7 @@ namespace Quanlibanhang.Forms
             InitializeComponent();
         }
 
-       
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
             string user = txtUserLogin.Text.Trim();
@@ -53,6 +53,9 @@ namespace Quanlibanhang.Forms
                     if (result != null)
                     {
                         string fullName = result.ToString();
+
+                        Session.FullName = fullName;
+                        Session.Username = user;
                         MessageBox.Show($"Đăng nhập thành công! Chào mừng {fullName}", "Thành công");
 
                         // 3. Mở Form Chính (Form To) và ẩn Form đăng nhập
@@ -78,10 +81,15 @@ namespace Quanlibanhang.Forms
         }
 
         // Nút để chuyển sang Form Đăng ký nếu chưa có tài khoản
-        private void btnOpenRegister_Click(object sender, EventArgs e)
+        
+        private void btnOpenRegister_Click_1(object sender, EventArgs e)
         {
             FormRegister frmReg = new FormRegister();
-            frmReg.ShowDialog(); // Dùng ShowDialog để người dùng quay lại sau khi đăng ký xong
+            // Khi Form đăng ký đóng lại, ta sẽ hiện lại Form đăng nhập
+            frmReg.FormClosed += (s, args) => this.Show();
+
+            frmReg.Show(); // Hiện màn hình đăng ký
+            this.Hide();   // Ẩn màn hình đăng nhập
         }
     }
 }

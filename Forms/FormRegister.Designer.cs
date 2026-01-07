@@ -39,7 +39,7 @@
             txtUsername = new Sunny.UI.UITextBox();
             uiTableLayoutPanel3 = new Sunny.UI.UITableLayoutPanel();
             btnRegister = new Sunny.UI.UIButton();
-            uiButton2 = new Sunny.UI.UIButton();
+            btnOpenLogin = new Sunny.UI.UIButton();
             uiTableLayoutPanel1.SuspendLayout();
             uiTableLayoutPanel2.SuspendLayout();
             uiTableLayoutPanel3.SuspendLayout();
@@ -189,7 +189,7 @@
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 320F));
             uiTableLayoutPanel3.Controls.Add(btnRegister, 0, 0);
-            uiTableLayoutPanel3.Controls.Add(uiButton2, 1, 0);
+            uiTableLayoutPanel3.Controls.Add(btnOpenLogin, 1, 0);
             uiTableLayoutPanel3.Dock = DockStyle.Fill;
             uiTableLayoutPanel3.Location = new Point(0, 241);
             uiTableLayoutPanel3.Margin = new Padding(0);
@@ -213,20 +213,21 @@
             btnRegister.TipsFont = new Font("Microsoft Sans Serif", 9F);
             btnRegister.Click += btnRegister_Click;
             // 
-            // uiButton2
+            // btnOpenLogin
             // 
-            uiButton2.Anchor = AnchorStyles.None;
-            uiButton2.FillColor = Color.Gray;
-            uiButton2.Font = new Font("Microsoft Sans Serif", 12F);
-            uiButton2.Location = new Point(427, 18);
-            uiButton2.MinimumSize = new Size(1, 1);
-            uiButton2.Name = "uiButton2";
-            uiButton2.RectColor = Color.FromArgb(224, 224, 224);
-            uiButton2.RectDisableColor = Color.FromArgb(224, 224, 224);
-            uiButton2.Size = new Size(114, 50);
-            uiButton2.TabIndex = 0;
-            uiButton2.Text = "Đăng nhập";
-            uiButton2.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnOpenLogin.Anchor = AnchorStyles.None;
+            btnOpenLogin.FillColor = Color.Gray;
+            btnOpenLogin.Font = new Font("Microsoft Sans Serif", 12F);
+            btnOpenLogin.Location = new Point(427, 18);
+            btnOpenLogin.MinimumSize = new Size(1, 1);
+            btnOpenLogin.Name = "btnOpenLogin";
+            btnOpenLogin.RectColor = Color.FromArgb(224, 224, 224);
+            btnOpenLogin.RectDisableColor = Color.FromArgb(224, 224, 224);
+            btnOpenLogin.Size = new Size(114, 50);
+            btnOpenLogin.TabIndex = 0;
+            btnOpenLogin.Text = "Đăng nhập";
+            btnOpenLogin.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnOpenLogin.Click += btnOpenLogin_Click;
             // 
             // FormRegister
             // 
@@ -254,7 +255,7 @@
         private Sunny.UI.UITextBox txtUsername;
         private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel3;
         private Sunny.UI.UIButton btnRegister;
-        private Sunny.UI.UIButton uiButton2;
+        private Sunny.UI.UIButton btnOpenLogin;
         private Sunny.UI.UITextBox txtFullName;
         private Sunny.UI.UILabel uiLabel4;
         private Sunny.UI.UILabel uiLabel3;

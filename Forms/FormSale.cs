@@ -1,4 +1,5 @@
 ﻿using Quanlibanhang.Data;
+using Quanlibanhang.Forms;
 using Quanlibanhang.Helpers;
 using Sunny.UI;
 using System;
@@ -252,7 +253,7 @@ ORDER BY CustomerName;
         {
             if (cart.Count == 0)
             {
-                MessageBox.Show("Giỏ hàng đang trống!");
+                MessageBox.Show("Giỏ hàng đang trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -260,64 +261,69 @@ ORDER BY CustomerName;
             string phone = (txtPhone.Text ?? "").Trim();
             decimal total = cart.Sum(x => x.LineTotal);
 
-            // Validate đơn giản
             if (string.IsNullOrWhiteSpace(customer))
             {
-                MessageBox.Show("Vui lòng nhập tên khách!");
+                MessageBox.Show("Vui lòng nhập tên khách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtCustomer.Focus();
                 return;
             }
 
-            // Mở kết nối để dùng transaction
+            // 1. Mở kết nối ngoài cùng
+            db.CloseConnection();
             db.OpenConnection();
             var conn = db.GetConnection();
 
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+            }
+
+            // 2. Sử dụng Transaction để đảm bảo an toàn dữ liệu
             using (var tran = conn.BeginTransaction())
             {
                 try
                 {
-                    // 1) Insert Orders -> lấy OrderId
+                    // Bước 1: Lưu đơn hàng tổng (Orders)
                     long orderId;
-                    using (var cmd = new SQLiteCommand(@"
-INSERT INTO Orders(CustomerName, Phone, TotalAmount)
-VALUES(@CustomerName, @Phone, @TotalAmount);
-SELECT last_insert_rowid();
-", conn, tran))
+                    string sqlOrder = @"
+                INSERT INTO Orders(CustomerName, Phone, TotalAmount, OrderDate) 
+                VALUES(@CustomerName, @Phone, @TotalAmount, @Date);
+                SELECT last_insert_rowid();";
+
+                    using (var cmd = new SQLiteCommand(sqlOrder, conn, tran))
                     {
                         cmd.Parameters.AddWithValue("@CustomerName", customer);
                         cmd.Parameters.AddWithValue("@Phone", phone);
                         cmd.Parameters.AddWithValue("@TotalAmount", (double)total);
+                        cmd.Parameters.AddWithValue("@Date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                        object scalar = cmd.ExecuteScalar();
-                        orderId = Convert.ToInt64(scalar);
+                        orderId = Convert.ToInt64(cmd.ExecuteScalar());
                     }
 
-                    // 2) Với từng dòng giỏ: check&trừ tồn + insert OrderDetails
+                    // Bước 2: Lưu chi tiết và trừ tồn kho cho từng sản phẩm
                     foreach (var line in cart)
                     {
-                        // 2.1) Trừ tồn kho có điều kiện Stock >= Qty
-                        using (var cmdStock = new SQLiteCommand(@"
-UPDATE Products
-SET Stock = Stock - @Qty
-WHERE ProductId = @ProductId AND Stock >= @Qty;
-", conn, tran))
+                        // Cập nhật tồn kho (Chỉ trừ nếu đủ hàng)
+                        string sqlStock = "UPDATE Products SET Stock = Stock - @Qty WHERE ProductId = @Pid AND Stock >= @Qty";
+                        using (var cmdStock = new SQLiteCommand(sqlStock, conn, tran))
                         {
                             cmdStock.Parameters.AddWithValue("@Qty", line.Qty);
-                            cmdStock.Parameters.AddWithValue("@ProductId", line.ProductId);
+                            cmdStock.Parameters.AddWithValue("@Pid", line.ProductId);
 
                             int affected = cmdStock.ExecuteNonQuery();
                             if (affected == 0)
-                                throw new Exception($"Không đủ tồn kho khi thanh toán: {line.ProductName} ({line.ProductId})");
+                                throw new Exception($"Sản phẩm '{line.ProductName}' không đủ tồn kho!");
                         }
 
-                        // 2.2) Insert OrderDetails (ProductId TEXT)
-                        using (var cmdDetail = new SQLiteCommand(@"
-INSERT INTO OrderDetails(OrderId, ProductId, Quantity, UnitPrice, LineTotal)
-VALUES(@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);
-", conn, tran))
+                        // Lưu chi tiết đơn hàng
+                        string sqlDetail = @"
+                    INSERT INTO OrderDetails(OrderId, ProductId, Quantity, UnitPrice, LineTotal) 
+                    VALUES(@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal)";
+
+                        using (var cmdDetail = new SQLiteCommand(sqlDetail, conn, tran))
                         {
                             cmdDetail.Parameters.AddWithValue("@OrderId", orderId);
-                            cmdDetail.Parameters.AddWithValue("@ProductId", line.ProductId); // TEXT
+                            cmdDetail.Parameters.AddWithValue("@ProductId", line.ProductId);
                             cmdDetail.Parameters.AddWithValue("@Quantity", line.Qty);
                             cmdDetail.Parameters.AddWithValue("@UnitPrice", (double)line.UnitPrice);
                             cmdDetail.Parameters.AddWithValue("@LineTotal", (double)line.LineTotal);
@@ -326,32 +332,37 @@ VALUES(@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);
                         }
                     }
 
+                    // Hoàn tất giao dịch
                     tran.Commit();
+                    // GỌI HÀM LƯU EXCEL NGAY TẠI ĐÂY
+                    SaveToExcel(orderId, customer, phone, total);
+                    MessageBox.Show($"Thanh toán thành công!\nMã đơn: {orderId}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    MessageBox.Show($"Thanh toán thành công!\nMã đơn: {orderId}");
-
-                    // Clear giỏ + UI
+                    // 3. Cập nhật UI sau khi thành công
                     cart.Clear();
                     RefreshCartGrid();
                     UpdateTotalUI();
+                    txtCustomer.Clear();
+                    txtPhone.Clear();
 
-                    // Reload product list + autocomplete
+                    // Reload dữ liệu mới nhất (để cập nhật Stock mới trên màn hình)
                     LoadActiveProductsToCombo();
                     LoadCustomerAutoComplete();
                 }
                 catch (Exception ex)
                 {
+                    // Hủy bỏ mọi thay đổi nếu có lỗi
                     tran.Rollback();
-                    MessageBox.Show("Lỗi thanh toán: " + ex.Message);
+                    MessageBox.Show("Lỗi thanh toán: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Utils.LogDB("btnCheckout_Click", ex);
                 }
                 finally
                 {
+                    // LUÔN LUÔN đóng kết nối ở đây
                     db.CloseConnection();
                 }
             }
         }
-
         // =========================
         // EXPORT TXT (giỏ hiện tại)
         // =========================
@@ -369,6 +380,9 @@ VALUES(@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);
                 string phone = (txtPhone.Text ?? "").Trim();
                 decimal total = cart.Sum(x => x.LineTotal);
 
+                // Lấy tên nhân viên từ Session
+                string staffName = !string.IsNullOrEmpty(Session.FullName) ? Session.FullName : "Chưa xác định";
+
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "Text file (*.txt)|*.txt";
@@ -379,6 +393,7 @@ VALUES(@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);
                     var sb = new StringBuilder();
                     sb.AppendLine("=========== HOA DON BAN HANG ===========");
                     sb.AppendLine($"Ngay: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                    sb.AppendLine($"Nhan vien: {staffName}");
                     sb.AppendLine($"Ten khach: {customer}");
                     sb.AppendLine($"SDT: {phone}");
                     sb.AppendLine("----------------------------------------");
@@ -440,6 +455,45 @@ VALUES(@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);
         {
             decimal total = cart.Sum(x => x.LineTotal);
             txtTotal.Text = total.ToString("N0", CultureInfo.InvariantCulture);
+        }
+
+        private void cboProduct_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            nudQuantity.Value = 1;
+        }
+        private void SaveToExcel(long orderId, string customer, string phone, decimal total)
+        {
+            try
+            {
+                // 1. Xác định thư mục và tên file theo ngày (ví dụ: Orders_2026_01_07.csv)
+                string folderPath = Path.Combine(Application.StartupPath, "HistoryOrders");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                string fileName = $"Orders_{DateTime.Now:yyyy_MM_dd}.csv";
+                string filePath = Path.Combine(folderPath, fileName);
+
+                bool isNewFile = !File.Exists(filePath);
+
+                // 2. Chuẩn bị dữ liệu: Gộp tất cả sản phẩm thành 1 chuỗi để lưu trên 1 hàng
+                string productDetails = string.Join(" | ", cart.Select(x => $"{x.ProductName}(x{x.Qty})"));
+
+                using (StreamWriter sw = new StreamWriter(filePath, true, Encoding.UTF8))
+                {
+                    // Nếu là file mới, tạo dòng tiêu đề (Header)
+                    if (isNewFile)
+                    {
+                        sw.WriteLine("Mã Đơn,Thời Gian,Nhân Viên,Khách Hàng,SĐT,Danh Sách Sản Phẩm,Tổng Tiền");
+                    }
+
+                    // Ghi dữ liệu đơn hàng trên 1 dòng duy nhất
+                    // Dùng dấu phẩy để ngăn cách các cột cho Excel
+                    sw.WriteLine($"{orderId},{DateTime.Now:HH:mm:ss},\"{Session.FullName}\",\"{customer}\",\"{phone}\",\"{productDetails}\",{total.ToString("0")}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.LogDB("SaveToExcel_Error", ex);
+            }
         }
     }
 }
