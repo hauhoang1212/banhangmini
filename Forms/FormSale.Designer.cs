@@ -88,7 +88,7 @@
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(1112, 48);
+            tableLayoutPanel1.Size = new Size(1180, 48);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // lblProduct
@@ -117,7 +117,7 @@
             cboProduct.MinimumSize = new Size(63, 0);
             cboProduct.Name = "cboProduct";
             cboProduct.Padding = new Padding(0, 0, 30, 2);
-            cboProduct.Size = new Size(292, 38);
+            cboProduct.Size = new Size(332, 38);
             cboProduct.SymbolSize = 24;
             cboProduct.TabIndex = 1;
             cboProduct.TextAlignment = ContentAlignment.MiddleCenter;
@@ -127,10 +127,10 @@
             // 
             nudQuantity.Dock = DockStyle.Fill;
             nudQuantity.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            nudQuantity.Location = new Point(703, 3);
+            nudQuantity.Location = new Point(743, 3);
             nudQuantity.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudQuantity.Name = "nudQuantity";
-            nudQuantity.Size = new Size(194, 38);
+            nudQuantity.Size = new Size(221, 38);
             nudQuantity.TabIndex = 3;
             nudQuantity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
@@ -138,7 +138,7 @@
             // 
             btnAddToCart.Dock = DockStyle.Fill;
             btnAddToCart.Font = new Font("Microsoft Sans Serif", 12F);
-            btnAddToCart.Location = new Point(903, 3);
+            btnAddToCart.Location = new Point(970, 3);
             btnAddToCart.MinimumSize = new Size(1, 1);
             btnAddToCart.Name = "btnAddToCart";
             btnAddToCart.Size = new Size(170, 42);
@@ -151,7 +151,7 @@
             lblQuantity.Dock = DockStyle.Fill;
             lblQuantity.Font = new Font("Microsoft Sans Serif", 12F);
             lblQuantity.ForeColor = Color.FromArgb(48, 48, 48);
-            lblQuantity.Location = new Point(503, 0);
+            lblQuantity.Location = new Point(543, 0);
             lblQuantity.Name = "lblQuantity";
             lblQuantity.Size = new Size(194, 48);
             lblQuantity.TabIndex = 2;
@@ -165,7 +165,7 @@
             uiLabel1.ForeColor = Color.FromArgb(48, 48, 48);
             uiLabel1.Location = new Point(0, 0);
             uiLabel1.Name = "uiLabel1";
-            uiLabel1.Size = new Size(1112, 50);
+            uiLabel1.Size = new Size(1180, 50);
             uiLabel1.TabIndex = 1;
             uiLabel1.Text = "Bán Hàng";
             uiLabel1.TextAlign = ContentAlignment.TopCenter;
@@ -183,7 +183,7 @@
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 47F));
             uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 200F));
-            uiTableLayoutPanel1.Size = new Size(1112, 436);
+            uiTableLayoutPanel1.Size = new Size(1180, 533);
             uiTableLayoutPanel1.TabIndex = 2;
             uiTableLayoutPanel1.TagString = null;
             // 
@@ -194,7 +194,7 @@
             lblCart.ForeColor = Color.FromArgb(48, 48, 48);
             lblCart.Location = new Point(3, 30);
             lblCart.Name = "lblCart";
-            lblCart.Size = new Size(1106, 47);
+            lblCart.Size = new Size(1174, 47);
             lblCart.TabIndex = 0;
             lblCart.Text = "Giỏ Hàng";
             lblCart.TextAlign = ContentAlignment.MiddleLeft;
@@ -243,7 +243,7 @@
             dataGridViewCellStyle5.Font = new Font("Microsoft Sans Serif", 12F);
             uiDataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle5;
             uiDataGridView1.SelectedIndex = -1;
-            uiDataGridView1.Size = new Size(1106, 353);
+            uiDataGridView1.Size = new Size(1174, 450);
             uiDataGridView1.StripeOddColor = Color.FromArgb(235, 243, 255);
             uiDataGridView1.TabIndex = 1;
             // 
@@ -297,13 +297,13 @@
             uiPanel1.Font = new Font("Microsoft Sans Serif", 12F);
             uiPanel1.ForeColor = Color.White;
             uiPanel1.ForeDisableColor = Color.White;
-            uiPanel1.Location = new Point(0, 357);
+            uiPanel1.Location = new Point(0, 454);
             uiPanel1.Margin = new Padding(0);
             uiPanel1.MinimumSize = new Size(1, 1);
             uiPanel1.Name = "uiPanel1";
             uiPanel1.RectColor = Color.White;
             uiPanel1.RectDisableColor = Color.White;
-            uiPanel1.Size = new Size(1112, 52);
+            uiPanel1.Size = new Size(1180, 52);
             uiPanel1.TabIndex = 3;
             uiPanel1.Text = null;
             uiPanel1.TextAlignment = ContentAlignment.MiddleCenter;
@@ -337,13 +337,13 @@
             uiTableLayoutPanel2.Controls.Add(btnCheckout, 2, 1);
             uiTableLayoutPanel2.Controls.Add(btnExportTxt, 3, 1);
             uiTableLayoutPanel2.Dock = DockStyle.Bottom;
-            uiTableLayoutPanel2.Location = new Point(0, 409);
+            uiTableLayoutPanel2.Location = new Point(0, 506);
             uiTableLayoutPanel2.Name = "uiTableLayoutPanel2";
             uiTableLayoutPanel2.RowCount = 3;
             uiTableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             uiTableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             uiTableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            uiTableLayoutPanel2.Size = new Size(1112, 125);
+            uiTableLayoutPanel2.Size = new Size(1180, 125);
             uiTableLayoutPanel2.TabIndex = 4;
             uiTableLayoutPanel2.TagString = null;
             // 
@@ -354,7 +354,7 @@
             lblCustomer.ForeColor = Color.FromArgb(48, 48, 48);
             lblCustomer.Location = new Point(3, 0);
             lblCustomer.Name = "lblCustomer";
-            lblCustomer.Size = new Size(151, 52);
+            lblCustomer.Size = new Size(161, 52);
             lblCustomer.TabIndex = 0;
             lblCustomer.Text = "Tên khách:";
             lblCustomer.TextAlign = ContentAlignment.MiddleCenter;
@@ -364,9 +364,9 @@
             lblPhone.Dock = DockStyle.Fill;
             lblPhone.Font = new Font("Microsoft Sans Serif", 12F);
             lblPhone.ForeColor = Color.FromArgb(48, 48, 48);
-            lblPhone.Location = new Point(584, 0);
+            lblPhone.Location = new Point(620, 0);
             lblPhone.Name = "lblPhone";
-            lblPhone.Size = new Size(201, 52);
+            lblPhone.Size = new Size(214, 52);
             lblPhone.TabIndex = 1;
             lblPhone.Text = "SĐT:";
             lblPhone.TextAlign = ContentAlignment.MiddleCenter;
@@ -378,7 +378,7 @@
             lblTotal.ForeColor = Color.FromArgb(48, 48, 48);
             lblTotal.Location = new Point(3, 52);
             lblTotal.Name = "lblTotal";
-            lblTotal.Size = new Size(151, 52);
+            lblTotal.Size = new Size(161, 52);
             lblTotal.TabIndex = 2;
             lblTotal.Text = "Tổng tiền:";
             lblTotal.TextAlign = ContentAlignment.MiddleCenter;
@@ -387,13 +387,13 @@
             // 
             txtCustomer.Dock = DockStyle.Fill;
             txtCustomer.Font = new Font("Microsoft Sans Serif", 12F);
-            txtCustomer.Location = new Point(161, 5);
+            txtCustomer.Location = new Point(171, 5);
             txtCustomer.Margin = new Padding(4, 5, 4, 5);
             txtCustomer.MinimumSize = new Size(1, 16);
             txtCustomer.Name = "txtCustomer";
             txtCustomer.Padding = new Padding(5);
             txtCustomer.ShowText = false;
-            txtCustomer.Size = new Size(416, 42);
+            txtCustomer.Size = new Size(442, 42);
             txtCustomer.TabIndex = 3;
             txtCustomer.TextAlignment = ContentAlignment.MiddleLeft;
             txtCustomer.Watermark = "";
@@ -402,13 +402,13 @@
             // 
             txtPhone.Dock = DockStyle.Fill;
             txtPhone.Font = new Font("Microsoft Sans Serif", 12F);
-            txtPhone.Location = new Point(792, 5);
+            txtPhone.Location = new Point(841, 5);
             txtPhone.Margin = new Padding(4, 5, 4, 5);
             txtPhone.MinimumSize = new Size(1, 16);
             txtPhone.Name = "txtPhone";
             txtPhone.Padding = new Padding(5);
             txtPhone.ShowText = false;
-            txtPhone.Size = new Size(316, 42);
+            txtPhone.Size = new Size(335, 42);
             txtPhone.TabIndex = 4;
             txtPhone.TextAlignment = ContentAlignment.MiddleCenter;
             txtPhone.Watermark = "";
@@ -417,13 +417,13 @@
             // 
             txtTotal.Dock = DockStyle.Fill;
             txtTotal.Font = new Font("Microsoft Sans Serif", 12F);
-            txtTotal.Location = new Point(161, 57);
+            txtTotal.Location = new Point(171, 57);
             txtTotal.Margin = new Padding(4, 5, 4, 5);
             txtTotal.MinimumSize = new Size(1, 16);
             txtTotal.Name = "txtTotal";
             txtTotal.Padding = new Padding(5);
             txtTotal.ShowText = false;
-            txtTotal.Size = new Size(416, 42);
+            txtTotal.Size = new Size(442, 42);
             txtTotal.TabIndex = 5;
             txtTotal.TextAlignment = ContentAlignment.MiddleLeft;
             txtTotal.Watermark = "";
@@ -432,10 +432,10 @@
             // 
             btnCheckout.Dock = DockStyle.Fill;
             btnCheckout.Font = new Font("Microsoft Sans Serif", 12F);
-            btnCheckout.Location = new Point(584, 55);
+            btnCheckout.Location = new Point(620, 55);
             btnCheckout.MinimumSize = new Size(1, 1);
             btnCheckout.Name = "btnCheckout";
-            btnCheckout.Size = new Size(201, 46);
+            btnCheckout.Size = new Size(214, 46);
             btnCheckout.TabIndex = 6;
             btnCheckout.Text = "Thanh Toán";
             btnCheckout.TipsFont = new Font("Microsoft Sans Serif", 9F);
@@ -444,10 +444,10 @@
             // 
             btnExportTxt.Dock = DockStyle.Fill;
             btnExportTxt.Font = new Font("Microsoft Sans Serif", 12F);
-            btnExportTxt.Location = new Point(791, 55);
+            btnExportTxt.Location = new Point(840, 55);
             btnExportTxt.MinimumSize = new Size(1, 1);
             btnExportTxt.Name = "btnExportTxt";
-            btnExportTxt.Size = new Size(318, 46);
+            btnExportTxt.Size = new Size(337, 46);
             btnExportTxt.TabIndex = 7;
             btnExportTxt.Text = "Xuất hóa đơn TXT";
             btnExportTxt.TipsFont = new Font("Microsoft Sans Serif", 9F);
@@ -456,7 +456,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1112, 534);
+            ClientSize = new Size(1180, 631);
             Controls.Add(uiPanel1);
             Controls.Add(uiTableLayoutPanel2);
             Controls.Add(uiTableLayoutPanel1);
