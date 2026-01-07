@@ -1,3 +1,5 @@
+using Quanlibanhang.Forms;
+
 namespace Quanlibanhang
 {
     internal static class Program
