@@ -44,6 +44,7 @@
             btnAdd = new Sunny.UI.UIButton();
             btnSave = new Sunny.UI.UIButton();
             uiTableLayoutPanel3 = new Sunny.UI.UITableLayoutPanel();
+            btnExportCsv = new Sunny.UI.UIButton();
             uiLabel2 = new Sunny.UI.UILabel();
             btnFilter = new Sunny.UI.UIButton();
             txtSearch = new Sunny.UI.UITextBox();
@@ -211,7 +212,6 @@
             txtCategoryName.TabIndex = 3;
             txtCategoryName.TextAlignment = ContentAlignment.MiddleLeft;
             txtCategoryName.Watermark = "";
-
             // 
             // uiTableLayoutPanel2
             // 
@@ -308,18 +308,33 @@
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.79397F));
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 13.0653267F));
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35.67839F));
+            uiTableLayoutPanel3.Controls.Add(btnExportCsv, 3, 0);
             uiTableLayoutPanel3.Controls.Add(uiLabel2, 0, 0);
             uiTableLayoutPanel3.Controls.Add(btnFilter, 2, 0);
             uiTableLayoutPanel3.Controls.Add(txtSearch, 1, 0);
             uiTableLayoutPanel3.Dock = DockStyle.Fill;
-            uiTableLayoutPanel3.Location = new Point(2, 174);
-            uiTableLayoutPanel3.Margin = new Padding(2);
+            uiTableLayoutPanel3.Location = new Point(0, 172);
+            uiTableLayoutPanel3.Margin = new Padding(0);
             uiTableLayoutPanel3.Name = "uiTableLayoutPanel3";
             uiTableLayoutPanel3.RowCount = 1;
             uiTableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            uiTableLayoutPanel3.Size = new Size(871, 34);
+            uiTableLayoutPanel3.Size = new Size(875, 38);
             uiTableLayoutPanel3.TabIndex = 3;
             uiTableLayoutPanel3.TagString = null;
+            // 
+            // btnExportCsv
+            // 
+            btnExportCsv.Dock = DockStyle.Fill;
+            btnExportCsv.Font = new Font("Microsoft Sans Serif", 12F);
+            btnExportCsv.Location = new Point(561, 0);
+            btnExportCsv.Margin = new Padding(0);
+            btnExportCsv.MinimumSize = new Size(1, 1);
+            btnExportCsv.Name = "btnExportCsv";
+            btnExportCsv.Size = new Size(314, 38);
+            btnExportCsv.TabIndex = 4;
+            btnExportCsv.Text = "Export CSV";
+            btnExportCsv.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnExportCsv.Click += btnExportCsv_Click;
             // 
             // uiLabel2
             // 
@@ -327,10 +342,10 @@
             uiLabel2.Dock = DockStyle.Fill;
             uiLabel2.Font = new Font("Microsoft Sans Serif", 12F);
             uiLabel2.ForeColor = Color.FromArgb(48, 48, 48);
-            uiLabel2.Location = new Point(2, 2);
-            uiLabel2.Margin = new Padding(2);
+            uiLabel2.Location = new Point(0, 0);
+            uiLabel2.Margin = new Padding(0);
             uiLabel2.Name = "uiLabel2";
-            uiLabel2.Size = new Size(148, 30);
+            uiLabel2.Size = new Size(152, 38);
             uiLabel2.TabIndex = 0;
             uiLabel2.Text = "Tìm kiếm";
             uiLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -339,10 +354,11 @@
             // 
             btnFilter.Dock = DockStyle.Fill;
             btnFilter.Font = new Font("Microsoft Sans Serif", 12F);
-            btnFilter.Location = new Point(449, 3);
+            btnFilter.Location = new Point(447, 0);
+            btnFilter.Margin = new Padding(0);
             btnFilter.MinimumSize = new Size(1, 1);
             btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(107, 28);
+            btnFilter.Size = new Size(114, 38);
             btnFilter.TabIndex = 2;
             btnFilter.Text = "Lọc";
             btnFilter.TipsFont = new Font("Microsoft Sans Serif", 9F);
@@ -352,13 +368,13 @@
             // 
             txtSearch.Dock = DockStyle.Fill;
             txtSearch.Font = new Font("Microsoft Sans Serif", 12F);
-            txtSearch.Location = new Point(156, 5);
-            txtSearch.Margin = new Padding(4, 5, 4, 5);
+            txtSearch.Location = new Point(153, 1);
+            txtSearch.Margin = new Padding(1);
             txtSearch.MinimumSize = new Size(1, 16);
             txtSearch.Name = "txtSearch";
             txtSearch.Padding = new Padding(5);
             txtSearch.ShowText = false;
-            txtSearch.Size = new Size(286, 24);
+            txtSearch.Size = new Size(293, 36);
             txtSearch.TabIndex = 3;
             txtSearch.TextAlignment = ContentAlignment.MiddleLeft;
             txtSearch.Watermark = "";
@@ -467,5 +483,6 @@
         private DataGridViewTextBoxColumn cCategoryId;
         private DataGridViewTextBoxColumn cName;
         private DataGridViewTextBoxColumn cDescription;
+        private Sunny.UI.UIButton btnExportCsv;
     }
 }

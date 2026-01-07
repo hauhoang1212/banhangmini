@@ -38,7 +38,6 @@ namespace Quanlibanhang
 
             SetupUI();
             InitGrid();
-            WireEvents();
         }
 
         private void FormSale_Load(object sender, EventArgs e)
@@ -80,13 +79,6 @@ namespace Quanlibanhang
             uiDataGridView1.Columns["cQty"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
-        private void WireEvents()
-        {
-            btnAddToCart.Click += btnAddToCart_Click;
-            btnCart.Click += btnCart_Click;
-            btnCheckout.Click += btnCheckout_Click;
-            btnExportTxt.Click += btnExportTxt_Click;
-        }
 
         // =========================
         // LOAD PRODUCTS (IsActive=1)

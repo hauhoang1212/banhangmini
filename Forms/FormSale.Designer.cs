@@ -145,6 +145,7 @@
             btnAddToCart.TabIndex = 4;
             btnAddToCart.Text = "Thêm vào giỏ";
             btnAddToCart.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnAddToCart.Click += btnAddToCart_Click;
             // 
             // lblQuantity
             // 
@@ -320,6 +321,7 @@
             btnCart.TabIndex = 0;
             btnCart.Text = "Xóa khỏi giỏ";
             btnCart.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnCart.Click += btnCart_Click;
             // 
             // uiTableLayoutPanel2
             // 
@@ -439,6 +441,7 @@
             btnCheckout.TabIndex = 6;
             btnCheckout.Text = "Thanh Toán";
             btnCheckout.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnCheckout.Click += btnCheckout_Click;
             // 
             // btnExportTxt
             // 
@@ -451,6 +454,7 @@
             btnExportTxt.TabIndex = 7;
             btnExportTxt.Text = "Xuất hóa đơn TXT";
             btnExportTxt.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnExportTxt.Click += btnExportTxt_Click;
             // 
             // FormSale
             // 

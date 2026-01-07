@@ -480,6 +480,7 @@
             // 
             // lblName
             // 
+            lblName.BackColor = SystemColors.Control;
             lblName.Dock = DockStyle.Fill;
             lblName.Font = new Font("Microsoft Sans Serif", 12F);
             lblName.ForeColor = Color.FromArgb(48, 48, 48);
