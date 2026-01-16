@@ -3,6 +3,7 @@ using Quanlibanhang.Forms;
 using Sunny.UI;
 using System.Data;
 using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Quanlibanhang
 {
@@ -85,33 +86,43 @@ namespace Quanlibanhang
                 string chucVu = (Session.Role == 1) ? "Quản lý: " : "Nhân viên: ";
                 lblUser.Text = chucVu + Session.FullName;
             }
-            InitRevenueChart();
+            
+            dtpFromDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            dtpToDate.Value = DateTime.Now;
+
             PhanQuyen();
+            btnFilter.PerformClick(); // Tự động nhấn nút lọc để hiện dữ liệu lần đầu
+            
+            
         }
 
         private void PhanQuyen()
         {
-            // Nếu là nhân viên (Role = 0)
-            if (Session.Role == 0)
+            // Kiểm tra quyền hạn từ Session
+            bool isAdmin = (Session.Role == 1);
+
+            // 1. Ẩn/Hiện Menu Danh mục
+            danhMụcToolStripMenuItem.Visible = isAdmin;
+
+            // 2. Ẩn/Hiện toàn bộ khu vực báo cáo (Biểu đồ và Bộ lọc)
+            // Ẩn biểu đồ cột và biểu đồ tròn
+            if (chartRevenue != null) chartRevenue.Visible = isAdmin;
+            if (chartTopProducts != null) chartTopProducts.Visible = isAdmin;
+
+            // Ẩn bộ lọc ngày tháng và nút Lọc báo cáo để nhân viên không tự bấm load lại được
+            if (dtpFromDate != null) dtpFromDate.Visible = isAdmin;
+            if (dtpToDate != null) dtpToDate.Visible = isAdmin;
+            if (btnFilter != null) btnFilter.Visible = isAdmin;
+
+            // 3. Cập nhật nhãn trạng thái dưới thanh Footer
+            if (isAdmin)
             {
-                // Ẩn menu Danh mục (Quản lý sản phẩm, loại sản phẩm)
-                danhMụcToolStripMenuItem.Visible = false;
-
-                // Ẩn menu Hệ thống hoặc các nút quản trị khác nếu cần
-                // hệThốngToolStripMenuItem.Visible = false;
-
-                // Nếu bạn có biểu đồ doanh thu, cũng nên ẩn đi đối với nhân viên
-                if (chartRevenue != null) chartRevenue.Visible = false;
-
-                lblStatus.Text = "Quyền hạn: Nhân viên bán hàng";
+                lblStatus.Text = "Quyền hạn: Quản lý hệ thống";
             }
             else
             {
-                // Quản lý (Role = 1) sẽ thấy tất cả
-                danhMụcToolStripMenuItem.Visible = true;
-                if (chartRevenue != null) chartRevenue.Visible = true;
-
-                lblStatus.Text = "Quyền hạn: Quản lý hệ thống";
+                lblStatus.Text = "Quyền hạn: Nhân viên bán hàng";
+               
             }
         }
         private void lblTime_Click(object sender, EventArgs e)
@@ -123,35 +134,32 @@ namespace Quanlibanhang
         {
             lblTime.Text = "Thời gian: " + DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
         }
-        private void InitRevenueChart()
+        private void InitRevenueChart(string fromDate, string toDate)
         {
-            DataTable dt = db.ExecuteQuery(@"
-        SELECT strftime('%d/%m', OrderDate) as Ngay, SUM(TotalAmount) as DoanhThu 
-        FROM Orders 
-        GROUP BY Ngay ORDER BY Ngay ASC LIMIT 7");
+            string sql = $@"
+                SELECT strftime('%d/%m', OrderDate) as Ngay, SUM(TotalAmount) as DoanhThu 
+                FROM Orders 
+                WHERE OrderDate BETWEEN '{fromDate}' AND '{toDate}'
+                GROUP BY Ngay 
+                ORDER BY OrderDate ASC";
+
+            DataTable dt = db.ExecuteQuery(sql);
 
             if (dt == null || dt.Rows.Count == 0) return;
 
             UIBarOption option = new UIBarOption();
-            option.Title = new UITitle { Text = "Doanh thu 7 ngày gần nhất" };
+            option.Title = new UITitle { Text = "Báo cáo doanh thu theo thời gian" };
             option.ToolTip = new UIBarToolTip();
-
-            // CHỈNH LỖI 000000: Tăng khoảng cách lề trái để hiện đủ số tiền lớn
-            option.Grid.Left = 80;
+            option.Grid.Left = 80; // Tránh lỗi hiển thị số tiền lớn
 
             UIBarSeries series = new UIBarSeries();
             series.Name = "Doanh thu";
-
-            // HIỂN THỊ SỐ TIỀN TRÊN ĐẦU MỖI CỘT
             series.ShowValue = true;
 
             foreach (DataRow row in dt.Rows)
             {
-                string ngay = row["Ngay"].ToString();
-                double doanhThu = Convert.ToDouble(row["DoanhThu"]);
-
-                option.XAxis.Data.Add(ngay);
-                series.AddData(doanhThu);
+                option.XAxis.Data.Add(row["Ngay"].ToString());
+                series.AddData(Convert.ToDouble(row["DoanhThu"]));
             }
 
             option.Series.Add(series);
@@ -204,6 +212,65 @@ namespace Quanlibanhang
             {
                 Application.Exit();
             }
+        }
+
+
+        private void InitPieChart(string fromDate, string toDate)
+        {
+            // Sử dụng cột LineTotal đã có sẵn trong bảng OrderDetails để tính doanh thu
+            string sql = $@"
+        SELECT p.Name, SUM(d.LineTotal) as Revenue
+        FROM OrderDetails d
+        JOIN Products p ON d.ProductId = p.ProductId
+        JOIN Orders o ON d.OrderId = o.OrderId
+        WHERE o.OrderDate BETWEEN '{fromDate}' AND '{toDate}'
+        GROUP BY p.Name
+        ORDER BY Revenue DESC
+        LIMIT 5";
+
+            DataTable dt = db.ExecuteQuery(sql);
+
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                
+                return;
+            }
+
+            var option = new UIPieOption();
+            option.Title = new UITitle { Text = "Top 5 Sản phẩm Doanh thu cao" };
+
+            // Thêm ToolTip để khi di chuột vào sẽ hiện con số
+            option.ToolTip = new UIPieToolTip();
+
+            UIPieSeries series = new UIPieSeries();
+            series.Name = "Doanh thu";
+
+            foreach (DataRow row in dt.Rows)
+            {
+                // AddData(tên_mảnh, giá_trị)
+                series.AddData(row["Name"].ToString(), Convert.ToDouble(row["Revenue"]));
+            }
+
+            option.Series.Add(series);
+            chartTopProducts.SetOption(option);
+        }
+
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+            // Chỉ cho phép chạy nếu là Quản lý
+            if (Session.Role != 1)
+            {
+                return;
+            }
+            // Lấy giá trị từ UIDatePicker và định dạng chuẩn SQL
+            string fromDate = dtpFromDate.Value.ToString("yyyy-MM-dd 00:00:00");
+            string toDate = dtpToDate.Value.ToString("yyyy-MM-dd 23:59:59");
+
+            // Gọi hàm vẽ biểu đồ với tham số ngày đã chọn
+            InitRevenueChart(fromDate, toDate);
+
+            // Gọi thêm hàm biểu đồ tròn (Pie Chart) nếu bạn đã viết
+             InitPieChart(fromDate, toDate);
         }
     }
 }

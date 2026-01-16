@@ -44,11 +44,19 @@
             nghiệpVụToolStripMenuItem = new ToolStripMenuItem();
             menuItemSale = new ToolStripMenuItem();
             lblUser = new Label();
+            uiTableLayoutPanel1 = new Sunny.UI.UITableLayoutPanel();
+            uiTableLayoutPanel2 = new Sunny.UI.UITableLayoutPanel();
+            dtpFromDate = new Sunny.UI.UIDatePicker();
+            dtpToDate = new Sunny.UI.UIDatePicker();
+            btnFilter = new Sunny.UI.UIButton();
             chartRevenue = new Sunny.UI.UIBarChart();
+            chartTopProducts = new Sunny.UI.UIPieChart();
             timerSystem = new System.Windows.Forms.Timer(components);
             tableLayoutPanel1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
+            uiTableLayoutPanel1.SuspendLayout();
+            uiTableLayoutPanel2.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -59,7 +67,7 @@
             tableLayoutPanel1.Controls.Add(uiLabel1, 0, 0);
             tableLayoutPanel1.Controls.Add(menuStrip1, 0, 1);
             tableLayoutPanel1.Controls.Add(lblUser, 0, 3);
-            tableLayoutPanel1.Controls.Add(chartRevenue, 0, 2);
+            tableLayoutPanel1.Controls.Add(uiTableLayoutPanel1, 0, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -132,14 +140,14 @@
             // menuItemExit
             // 
             menuItemExit.Name = "menuItemExit";
-            menuItemExit.Size = new Size(224, 26);
+            menuItemExit.Size = new Size(160, 26);
             menuItemExit.Text = "Thoát";
             menuItemExit.Click += menuItemExit_Click_1;
             // 
             // menuLogout
             // 
             menuLogout.Name = "menuLogout";
-            menuLogout.Size = new Size(224, 26);
+            menuLogout.Size = new Size(160, 26);
             menuLogout.Text = "Đăng xuất";
             menuLogout.Click += menuLogout_Click;
             // 
@@ -190,19 +198,125 @@
             lblUser.Text = "...";
             lblUser.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // uiTableLayoutPanel1
+            // 
+            uiTableLayoutPanel1.ColumnCount = 2;
+            uiTableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            uiTableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 390F));
+            uiTableLayoutPanel1.Controls.Add(uiTableLayoutPanel2, 0, 0);
+            uiTableLayoutPanel1.Controls.Add(chartRevenue, 0, 1);
+            uiTableLayoutPanel1.Controls.Add(chartTopProducts, 1, 1);
+            uiTableLayoutPanel1.Dock = DockStyle.Fill;
+            uiTableLayoutPanel1.Location = new Point(3, 61);
+            uiTableLayoutPanel1.Name = "uiTableLayoutPanel1";
+            uiTableLayoutPanel1.RowCount = 3;
+            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.8279572F));
+            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 88.17204F));
+            uiTableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 41F));
+            uiTableLayoutPanel1.Size = new Size(869, 372);
+            uiTableLayoutPanel1.TabIndex = 0;
+            uiTableLayoutPanel1.TagString = null;
+            // 
+            // uiTableLayoutPanel2
+            // 
+            uiTableLayoutPanel2.ColumnCount = 3;
+            uiTableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
+            uiTableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
+            uiTableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180F));
+            uiTableLayoutPanel2.Controls.Add(dtpFromDate, 0, 0);
+            uiTableLayoutPanel2.Controls.Add(dtpToDate, 1, 0);
+            uiTableLayoutPanel2.Controls.Add(btnFilter, 2, 0);
+            uiTableLayoutPanel2.Dock = DockStyle.Fill;
+            uiTableLayoutPanel2.Location = new Point(0, 0);
+            uiTableLayoutPanel2.Margin = new Padding(0);
+            uiTableLayoutPanel2.Name = "uiTableLayoutPanel2";
+            uiTableLayoutPanel2.RowCount = 1;
+            uiTableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            uiTableLayoutPanel2.Size = new Size(479, 39);
+            uiTableLayoutPanel2.TabIndex = 0;
+            uiTableLayoutPanel2.TagString = null;
+            // 
+            // dtpFromDate
+            // 
+            dtpFromDate.Anchor = AnchorStyles.None;
+            dtpFromDate.DateCultureInfo = new System.Globalization.CultureInfo("");
+            dtpFromDate.FillColor = Color.White;
+            dtpFromDate.Font = new Font("Microsoft Sans Serif", 12F);
+            dtpFromDate.Location = new Point(4, 5);
+            dtpFromDate.Margin = new Padding(4, 5, 4, 5);
+            dtpFromDate.MaxLength = 10;
+            dtpFromDate.MinimumSize = new Size(63, 0);
+            dtpFromDate.Name = "dtpFromDate";
+            dtpFromDate.Padding = new Padding(0, 0, 30, 2);
+            dtpFromDate.Size = new Size(142, 29);
+            dtpFromDate.SymbolDropDown = 61555;
+            dtpFromDate.SymbolNormal = 61555;
+            dtpFromDate.SymbolSize = 24;
+            dtpFromDate.TabIndex = 0;
+            dtpFromDate.Text = "2026-01-16";
+            dtpFromDate.TextAlignment = ContentAlignment.MiddleLeft;
+            dtpFromDate.Value = new DateTime(2026, 1, 16, 10, 19, 27, 124);
+            dtpFromDate.Watermark = "";
+            // 
+            // dtpToDate
+            // 
+            dtpToDate.Anchor = AnchorStyles.None;
+            dtpToDate.DateCultureInfo = new System.Globalization.CultureInfo("");
+            dtpToDate.FillColor = Color.White;
+            dtpToDate.Font = new Font("Microsoft Sans Serif", 12F);
+            dtpToDate.Location = new Point(154, 5);
+            dtpToDate.Margin = new Padding(4, 5, 4, 5);
+            dtpToDate.MaxLength = 10;
+            dtpToDate.MinimumSize = new Size(63, 0);
+            dtpToDate.Name = "dtpToDate";
+            dtpToDate.Padding = new Padding(0, 0, 30, 2);
+            dtpToDate.Size = new Size(142, 29);
+            dtpToDate.SymbolDropDown = 61555;
+            dtpToDate.SymbolNormal = 61555;
+            dtpToDate.SymbolSize = 24;
+            dtpToDate.TabIndex = 1;
+            dtpToDate.Text = "2026-01-16";
+            dtpToDate.TextAlignment = ContentAlignment.MiddleLeft;
+            dtpToDate.Value = new DateTime(2026, 1, 16, 10, 19, 29, 904);
+            dtpToDate.Watermark = "";
+            // 
+            // btnFilter
+            // 
+            btnFilter.Anchor = AnchorStyles.None;
+            btnFilter.Font = new Font("Microsoft Sans Serif", 12F);
+            btnFilter.Location = new Point(303, 3);
+            btnFilter.MinimumSize = new Size(1, 1);
+            btnFilter.Name = "btnFilter";
+            btnFilter.Size = new Size(174, 33);
+            btnFilter.TabIndex = 2;
+            btnFilter.Text = "Lọc báo cáo";
+            btnFilter.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnFilter.Click += btnFilter_Click;
+            // 
             // chartRevenue
             // 
-            chartRevenue.Anchor = AnchorStyles.None;
+            chartRevenue.Dock = DockStyle.Fill;
             chartRevenue.Font = new Font("Microsoft Sans Serif", 12F);
             chartRevenue.LegendFont = new Font("Microsoft Sans Serif", 9F);
-            chartRevenue.Location = new Point(138, 128);
+            chartRevenue.Location = new Point(3, 42);
             chartRevenue.MinimumSize = new Size(1, 1);
             chartRevenue.Name = "chartRevenue";
-            chartRevenue.Size = new Size(599, 238);
+            chartRevenue.Size = new Size(473, 285);
             chartRevenue.SubFont = new Font("Microsoft Sans Serif", 9F);
-            chartRevenue.TabIndex = 4;
-            chartRevenue.Text = "Báo cáo doanh thu tuần";
-            chartRevenue.Click += chartRevenue_Click;
+            chartRevenue.TabIndex = 1;
+            chartRevenue.Text = "uiBarChart1";
+            // 
+            // chartTopProducts
+            // 
+            chartTopProducts.Font = new Font("Microsoft Sans Serif", 12F);
+            chartTopProducts.LegendFont = new Font("Microsoft Sans Serif", 9F);
+            chartTopProducts.Location = new Point(482, 42);
+            chartTopProducts.MinimumSize = new Size(1, 1);
+            chartTopProducts.Name = "chartTopProducts";
+            chartTopProducts.Size = new Size(384, 285);
+            chartTopProducts.SubFont = new Font("Microsoft Sans Serif", 9F);
+            chartTopProducts.TabIndex = 2;
+            chartTopProducts.Text = "Sản phẩm bán chạy";
             // 
             // timerSystem
             // 
@@ -227,6 +341,8 @@
             statusStrip1.PerformLayout();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            uiTableLayoutPanel1.ResumeLayout(false);
+            uiTableLayoutPanel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -247,7 +363,13 @@
         private Label lblUser;
         private ToolStripStatusLabel lblTime;
         private System.Windows.Forms.Timer timerSystem;
-        private Sunny.UI.UIBarChart chartRevenue;
         private ToolStripMenuItem menuLogout;
+        private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel1;
+        private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel2;
+        private Sunny.UI.UIDatePicker dtpFromDate;
+        private Sunny.UI.UIDatePicker dtpToDate;
+        private Sunny.UI.UIButton btnFilter;
+        private Sunny.UI.UIBarChart chartRevenue;
+        private Sunny.UI.UIPieChart chartTopProducts;
     }
 }
