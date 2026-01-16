@@ -10,5 +10,6 @@ namespace Quanlibanhang.Forms
     {
         public static string FullName { get; set; }
         public static string Username { get; set; }
+        public static int Role { get; set; } // 0: Nhân viên, 1: Quản lý
     }
 }

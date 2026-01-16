@@ -37,6 +37,7 @@
             menuStrip1 = new MenuStrip();
             hệThốngToolStripMenuItem = new ToolStripMenuItem();
             menuItemExit = new ToolStripMenuItem();
+            menuLogout = new ToolStripMenuItem();
             danhMụcToolStripMenuItem = new ToolStripMenuItem();
             menuItemManageCategory = new ToolStripMenuItem();
             menuItemManageProduct = new ToolStripMenuItem();
@@ -123,7 +124,7 @@
             // 
             // hệThốngToolStripMenuItem
             // 
-            hệThốngToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { menuItemExit });
+            hệThốngToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { menuItemExit, menuLogout });
             hệThốngToolStripMenuItem.Name = "hệThốngToolStripMenuItem";
             hệThốngToolStripMenuItem.Size = new Size(88, 24);
             hệThốngToolStripMenuItem.Text = "Hệ Thống";
@@ -131,8 +132,16 @@
             // menuItemExit
             // 
             menuItemExit.Name = "menuItemExit";
-            menuItemExit.Size = new Size(130, 26);
+            menuItemExit.Size = new Size(224, 26);
             menuItemExit.Text = "Thoát";
+            menuItemExit.Click += menuItemExit_Click_1;
+            // 
+            // menuLogout
+            // 
+            menuLogout.Name = "menuLogout";
+            menuLogout.Size = new Size(224, 26);
+            menuLogout.Text = "Đăng xuất";
+            menuLogout.Click += menuLogout_Click;
             // 
             // danhMụcToolStripMenuItem
             // 
@@ -186,10 +195,10 @@
             chartRevenue.Anchor = AnchorStyles.None;
             chartRevenue.Font = new Font("Microsoft Sans Serif", 12F);
             chartRevenue.LegendFont = new Font("Microsoft Sans Serif", 9F);
-            chartRevenue.Location = new Point(42, 82);
+            chartRevenue.Location = new Point(138, 128);
             chartRevenue.MinimumSize = new Size(1, 1);
             chartRevenue.Name = "chartRevenue";
-            chartRevenue.Size = new Size(791, 329);
+            chartRevenue.Size = new Size(599, 238);
             chartRevenue.SubFont = new Font("Microsoft Sans Serif", 9F);
             chartRevenue.TabIndex = 4;
             chartRevenue.Text = "Báo cáo doanh thu tuần";
@@ -239,5 +248,6 @@
         private ToolStripStatusLabel lblTime;
         private System.Windows.Forms.Timer timerSystem;
         private Sunny.UI.UIBarChart chartRevenue;
+        private ToolStripMenuItem menuLogout;
     }
 }

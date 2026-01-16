@@ -34,38 +34,41 @@ namespace Quanlibanhang.Forms
 
             try
             {
-                // 1. Mở kết nối thông qua Utils
                 db.OpenConnection();
                 var conn = db.GetConnection();
 
-                // 2. Câu lệnh SQL kiểm tra sự tồn tại của tài khoản
-                // Sử dụng bảng 'Users' khớp với FormRegister
-                string sql = "SELECT FullName FROM Users WHERE Username = @user AND Password = @pass";
+                // CHỈNH SỬA TẠI ĐÂY: Lấy thêm cột Role từ bảng Users
+                string sql = "SELECT FullName, Role FROM Users WHERE Username = @user AND Password = @pass";
 
                 using (SQLiteCommand cmd = new SQLiteCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@user", user);
                     cmd.Parameters.AddWithValue("@pass", pass);
 
-                    // ExecuteScalar trả về giá trị đầu tiên tìm thấy (FullName)
-                    object result = cmd.ExecuteScalar();
-
-                    if (result != null)
+                    // Thay đổi sang ExecuteReader để đọc được nhiều cột (FullName và Role)
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
-                        string fullName = result.ToString();
+                        if (reader.Read())
+                        {
+                            // Lấy dữ liệu từ các cột tương ứng
+                            string fullName = reader["FullName"].ToString();
+                            int role = Convert.ToInt32(reader["Role"]);
 
-                        Session.FullName = fullName;
-                        Session.Username = user;
-                        MessageBox.Show($"Đăng nhập thành công! Chào mừng {fullName}", "Thành công");
+                            // GÁN DỮ LIỆU VÀO SESSION TẠI ĐÂY
+                            Session.FullName = fullName;
+                            Session.Username = user;
+                            Session.Role = role; // Lưu quyền vào Session để FormMain sử dụng
 
-                        // 3. Mở Form Chính (Form To) và ẩn Form đăng nhập
-                        FormMain frmMain = new FormMain();
-                        frmMain.Show();
-                        this.Hide();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!", "Lỗi đăng nhập");
+                            MessageBox.Show($"Đăng nhập thành công! Chào mừng {fullName}", "Thành công");
+
+                            FormMain frmMain = new FormMain();
+                            frmMain.Show();
+                            this.Hide();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!", "Lỗi đăng nhập");
+                        }
                     }
                 }
             }
@@ -75,8 +78,7 @@ namespace Quanlibanhang.Forms
             }
             finally
             {
-                // Luôn luôn đóng kết nối sau khi kiểm tra xong
-                db.CloseConnection();
+                db.CloseConnection(); // Luôn đóng kết nối để giải phóng file DB
             }
         }
 

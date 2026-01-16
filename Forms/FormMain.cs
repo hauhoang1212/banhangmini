@@ -81,11 +81,39 @@ namespace Quanlibanhang
             // Giả sử bạn có một Label tên là lblUser
             if (!string.IsNullOrEmpty(Session.FullName))
             {
-                lblUser.Text = "Nhân viên: " + Session.FullName;
+                // Cấu trúc: (Điều kiện) ? "Giá trị nếu đúng" : "Giá trị nếu sai"
+                string chucVu = (Session.Role == 1) ? "Quản lý: " : "Nhân viên: ";
+                lblUser.Text = chucVu + Session.FullName;
             }
             InitRevenueChart();
+            PhanQuyen();
         }
 
+        private void PhanQuyen()
+        {
+            // Nếu là nhân viên (Role = 0)
+            if (Session.Role == 0)
+            {
+                // Ẩn menu Danh mục (Quản lý sản phẩm, loại sản phẩm)
+                danhMụcToolStripMenuItem.Visible = false;
+
+                // Ẩn menu Hệ thống hoặc các nút quản trị khác nếu cần
+                // hệThốngToolStripMenuItem.Visible = false;
+
+                // Nếu bạn có biểu đồ doanh thu, cũng nên ẩn đi đối với nhân viên
+                if (chartRevenue != null) chartRevenue.Visible = false;
+
+                lblStatus.Text = "Quyền hạn: Nhân viên bán hàng";
+            }
+            else
+            {
+                // Quản lý (Role = 1) sẽ thấy tất cả
+                danhMụcToolStripMenuItem.Visible = true;
+                if (chartRevenue != null) chartRevenue.Visible = true;
+
+                lblStatus.Text = "Quyền hạn: Quản lý hệ thống";
+            }
+        }
         private void lblTime_Click(object sender, EventArgs e)
         {
 
@@ -134,6 +162,48 @@ namespace Quanlibanhang
         {
 
         }
-    }
 
+        private void menuItemExit_Click_1(object sender, EventArgs e)
+        {
+            // Hỏi xác nhận trước khi đóng hẳn ứng dụng
+            DialogResult result = MessageBox.Show("Bạn có muốn thoát chương trình không?", "Thoát ứng dụng", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                // Lệnh thoát toàn bộ ứng dụng và giải phóng file CSDL
+                Application.Exit();
+            }
+        }
+
+        private void menuLogout_Click(object sender, EventArgs e)
+        {
+            // 1. Hỏi xác nhận để tránh bấm nhầm
+            DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                // 2. Xóa thông tin phiên làm việc cũ để đảm bảo an toàn
+                Session.Username = null;
+                Session.FullName = null;
+                Session.Role = 0;
+
+                // 3. Ẩn Form hiện tại (FormMain)
+                this.Hide();
+
+                // 4. Khởi tạo và hiển thị lại Form Đăng nhập
+                FormLogin frmLogin = new FormLogin();
+                frmLogin.Show();
+            }
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Kiểm tra nếu Form đang hiển thị mà bị đóng (nhấn dấu X)
+            // thì gọi Application.Exit() để tắt hẳn chương trình
+            if (this.Visible)
+            {
+                Application.Exit();
+            }
+        }
+    }
 }

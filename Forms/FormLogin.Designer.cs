@@ -103,6 +103,7 @@
             txtPassLogin.MinimumSize = new Size(1, 16);
             txtPassLogin.Name = "txtPassLogin";
             txtPassLogin.Padding = new Padding(5);
+            txtPassLogin.PasswordChar = '*';
             txtPassLogin.ShowText = false;
             txtPassLogin.Size = new Size(371, 57);
             txtPassLogin.TabIndex = 2;
