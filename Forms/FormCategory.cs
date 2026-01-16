@@ -181,45 +181,83 @@ namespace Quanlibanhang
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            // Thu thập các ID đã chọn
+            // 1. Thu thập danh sách ID và Tên loại sản phẩm đã chọn
             List<string> selectedIds = new List<string>();
+            List<string> selectedNames = new List<string>();
+
             foreach (DataGridViewRow row in dgvCategories.Rows)
             {
-                if (Convert.ToBoolean(row.Cells["cchoose"].Value))
+                if (row.IsNewRow) continue;
+
+                // Kiểm tra xem dòng đó có được tích chọn không
+                bool isChecked = row.Cells["cchoose"].Value != null && Convert.ToBoolean(row.Cells["cchoose"].Value);
+
+                if (isChecked)
                 {
-                    selectedIds.Add(row.Cells["cCategoryId"].Value?.ToString());
+                    string id = row.Cells["cCategoryId"].Value?.ToString();
+                    string name = row.Cells["cName"].Value?.ToString();
+
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        selectedIds.Add(id.Replace("'", "''"));
+                        selectedNames.Add($"{name} ({id})");
+                    }
                 }
             }
 
+            // Kiểm tra nếu chưa chọn dòng nào
             if (selectedIds.Count == 0)
             {
                 MessageBox.Show("Vui lòng tích chọn ít nhất một loại để xoá!");
                 return;
             }
 
+            // 2. Xác nhận xóa từ người dùng
             if (MessageBox.Show($"Bạn có chắc muốn xoá {selectedIds.Count} dòng đã chọn?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-            {
-                try
-                {
-                    int count = 0;
-                    foreach (string id in selectedIds)
-                    {
-                        // Kiểm tra ràng buộc (nếu có bảng Sản phẩm tham chiếu tới)
-                        DataTable dtCheck = db.ExecuteQuery($"SELECT 1 FROM Products WHERE CategoryId='{id}' LIMIT 1");
-                        if (dtCheck != null && dtCheck.Rows.Count > 0)
-                        {
-                            MessageBox.Show($"Không thể xóa mã {id} vì đang có sản phẩm thuộc loại này!");
-                            continue;
-                        }
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
 
-                        if (db.ExecuteNonQuery($"DELETE FROM Categories WHERE CategoryId='{id}'")) count++;
+            try
+            {
+                int count = 0;
+                List<string> actuallyDeleted = new List<string>();
+
+                // Sử dụng vòng lặp for thay vì foreach để tránh lỗi biến chạy 'i'
+                for (int i = 0; i < selectedIds.Count; i++)
+                {
+                    string id = selectedIds[i];
+                    string nameInfo = selectedNames[i];
+
+                    // 3. Kiểm tra ràng buộc: Không xóa nếu đang có sản phẩm thuộc loại này
+                    DataTable dtCheck = db.ExecuteQuery($"SELECT 1 FROM Products WHERE CategoryId='{id}' LIMIT 1");
+                    if (dtCheck != null && dtCheck.Rows.Count > 0)
+                    {
+                        MessageBox.Show($"Không thể xóa loại '{nameInfo}' vì đang có sản phẩm thuộc loại này!");
+                        continue; // Bỏ qua dòng này và tiếp tục vòng lặp
                     }
 
-                    if (count > 0) MessageBox.Show($"Đã xoá thành công {count} dòng!");
-                    LoadCategories();
+                    // 4. Thực hiện lệnh xóa trong database
+                    if (db.ExecuteNonQuery($"DELETE FROM Categories WHERE CategoryId='{id}'"))
+                    {
+                        count++;
+                        actuallyDeleted.Add(nameInfo);
+                    }
                 }
-                catch (Exception ex) { MessageBox.Show("Lỗi xoá: " + ex.Message); }
+
+                // 5. Ghi Nhật ký hệ thống nếu có dòng bị xóa thành công
+                if (count > 0)
+                {
+                    string details = "Danh sách loại đã xóa: " + string.Join(", ", actuallyDeleted);
+                    Utils.WriteLog("XÓA", "Loại sản phẩm", details); // Ghi Log chi tiết
+
+                    MessageBox.Show($"Đã xoá thành công {count} dòng!");
+                    LoadCategories(); // Tải lại dữ liệu lên Grid
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi hệ thống khi xoá: " + ex.Message);
+                Utils.LogDB("DeleteCategory_Error", ex);
             }
         }
 
@@ -235,7 +273,7 @@ namespace Quanlibanhang
             if (!ValidateInput()) return;
 
             string id = txtCategoryId.Text.Trim().Replace("'", "''");
-            string name = txtCategoryName.Text.Trim().Replace("'", "''");
+            string name = txtCategoryName.Text.Trim().Replace("'", "''"); // Lưu ý: Hãy đảm bảo TextBox tên là txtCategoryName
             string desc = txtDescription.Text.Trim().Replace("'", "''");
 
             try
@@ -250,6 +288,7 @@ namespace Quanlibanhang
                         MessageBox.Show("Mã loại này đã tồn tại trong hệ thống!");
                         return;
                     }
+                    // Sử dụng tên cột 'Name' thay vì 'CategoryName' để khớp với DB thực tế (hình image_f588c5.png)
                     sql = $"INSERT INTO Categories(CategoryId, Name, Description) VALUES('{id}', '{name}', '{desc}')";
                 }
                 else
@@ -259,9 +298,20 @@ namespace Quanlibanhang
 
                 if (db.ExecuteNonQuery(sql))
                 {
+                    // --- BẮT ĐẦU GHI NHẬT KÝ HỆ THỐNG ---
+                    string action = isAdding ? "THÊM MỚI" : "CẬP NHẬT";
+                    string logDetail = isAdding
+                        ? $"Thêm loại sản phẩm: {name} (Mã: {id})"
+                        : $"Cập nhật loại sản phẩm: {name} (Mã: {id}). Mô tả mới: {desc}";
+
+                    // Gọi hàm ghi log đã viết trong Utils
+                    Utils.WriteLog(action, "Loại sản phẩm", logDetail);
+                    // --- KẾT THÚC GHI NHẬT KÝ ---
+
                     MessageBox.Show("Lưu thành công!");
                     SetEditingState(false);
                     LoadCategories(txtSearch.Text);
+                    
                 }
             }
             catch (Exception ex)

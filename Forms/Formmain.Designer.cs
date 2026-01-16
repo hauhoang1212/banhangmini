@@ -52,6 +52,7 @@
             chartRevenue = new Sunny.UI.UIBarChart();
             chartTopProducts = new Sunny.UI.UIPieChart();
             timerSystem = new System.Windows.Forms.Timer(components);
+            menulog = new ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
@@ -132,7 +133,7 @@
             // 
             // hệThốngToolStripMenuItem
             // 
-            hệThốngToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { menuItemExit, menuLogout });
+            hệThốngToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { menulog, menuLogout, menuItemExit });
             hệThốngToolStripMenuItem.Name = "hệThốngToolStripMenuItem";
             hệThốngToolStripMenuItem.Size = new Size(88, 24);
             hệThốngToolStripMenuItem.Text = "Hệ Thống";
@@ -140,14 +141,14 @@
             // menuItemExit
             // 
             menuItemExit.Name = "menuItemExit";
-            menuItemExit.Size = new Size(160, 26);
+            menuItemExit.Size = new Size(224, 26);
             menuItemExit.Text = "Thoát";
             menuItemExit.Click += menuItemExit_Click_1;
             // 
             // menuLogout
             // 
             menuLogout.Name = "menuLogout";
-            menuLogout.Size = new Size(160, 26);
+            menuLogout.Size = new Size(224, 26);
             menuLogout.Text = "Đăng xuất";
             menuLogout.Click += menuLogout_Click;
             // 
@@ -182,7 +183,7 @@
             // menuItemSale
             // 
             menuItemSale.Name = "menuItemSale";
-            menuItemSale.Size = new Size(154, 26);
+            menuItemSale.Size = new Size(224, 26);
             menuItemSale.Text = "Bán hàng";
             menuItemSale.Click += menuItemSale_Click;
             // 
@@ -323,6 +324,13 @@
             timerSystem.Enabled = true;
             timerSystem.Tick += timerSystem_Tick;
             // 
+            // menulog
+            // 
+            menulog.Name = "menulog";
+            menulog.Size = new Size(224, 26);
+            menulog.Text = "Lịch sử";
+            menulog.Click += menulog_Click;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -371,5 +379,6 @@
         private Sunny.UI.UIButton btnFilter;
         private Sunny.UI.UIBarChart chartRevenue;
         private Sunny.UI.UIPieChart chartTopProducts;
+        private ToolStripMenuItem menulog;
     }
 }

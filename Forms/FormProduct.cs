@@ -262,7 +262,7 @@ WHERE 1=1
         // =========================
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // VALIDATE
+            // 1. VALIDATE DỮ LIỆU ĐẦU VÀO
             if (string.IsNullOrWhiteSpace(txtProductID.Text))
             {
                 MessageBox.Show("Vui lòng nhập ID sản phẩm!");
@@ -277,20 +277,16 @@ WHERE 1=1
                 return;
             }
 
-            if (!decimal.TryParse(txtPrice.Text.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal price))
+            if (!decimal.TryParse(txtPrice.Text.Trim(), out decimal price))
             {
-                // nếu bạn nhập theo kiểu VN (dấu phẩy), thử parse lại
-                if (!decimal.TryParse(txtPrice.Text.Trim(), out price))
-                {
-                    MessageBox.Show("Đơn giá không hợp lệ!");
-                    txtPrice.Focus();
-                    return;
-                }
+                MessageBox.Show("Đơn giá không hợp lệ!");
+                txtPrice.Focus();
+                return;
             }
 
             if (!int.TryParse(txtStock.Text.Trim(), out int stock))
             {
-                MessageBox.Show("Stock không hợp lệ!");
+                MessageBox.Show("Số lượng tồn không hợp lệ!");
                 txtStock.Focus();
                 return;
             }
@@ -301,73 +297,65 @@ WHERE 1=1
                 return;
             }
 
-            // DATA
+            // 2. CHUẨN BỊ DỮ LIỆU
             string productId = txtProductID.Text.Trim().Replace("'", "''");
             string name = txtNameProduct.Text.Trim().Replace("'", "''");
             string categoryId = cboCategory.SelectedValue.ToString().Replace("'", "''");
+            string categoryName = cboCategory.Text; // Lấy tên loại để ghi Log
             string desc = txtDescription.Text.Trim().Replace("'", "''");
             int isActive = chkIsActive.Checked ? 1 : 0;
-
-            // decimal -> SQL invariant
-            string priceSql = price.ToString(CultureInfo.InvariantCulture);
+            string priceSql = price.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
             try
             {
                 string sql;
-
                 if (isAdding)
                 {
-                    // kiểm tra trùng ID
+                    // KIỂM TRA TRÙNG ID TRƯỚC KHI THÊM
                     string checkSql = $"SELECT COUNT(*) FROM Products WHERE ProductId='{productId}'";
-                    DataTable dt = db.ExecuteQuery(checkSql);
-                    if (dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0][0]) > 0)
+                    DataTable dtCheck = db.ExecuteQuery(checkSql);
+                    if (dtCheck.Rows.Count > 0 && Convert.ToInt32(dtCheck.Rows[0][0]) > 0)
                     {
                         MessageBox.Show("ID sản phẩm đã tồn tại!");
                         return;
                     }
 
-                    sql = $@"
-INSERT INTO Products
-(ProductId, Name, Price, CategoryID, Description, Stock, IsActive)
-VALUES
-('{productId}', '{name}', {priceSql}, '{categoryId}', '{desc}', {stock}, {isActive});
-";
+                    sql = $@"INSERT INTO Products (ProductId, Name, Price, CategoryID, Description, Stock, IsActive)
+                     VALUES ('{productId}', '{name}', {priceSql}, '{categoryId}', '{desc}', {stock}, {isActive});";
                 }
                 else
                 {
-                    sql = $@"
-UPDATE Products
-SET Name='{name}',
-    Price={priceSql},
-    Stock={stock},
-    CategoryID='{categoryId}',
-    Description='{desc}',
-    IsActive={isActive}
-WHERE ProductId='{productId}';
-";
+                    sql = $@"UPDATE Products SET Name='{name}', Price={priceSql}, Stock={stock}, 
+                     CategoryID='{categoryId}', Description='{desc}', IsActive={isActive}
+                     WHERE ProductId='{productId}';";
                 }
 
+                // 3. THỰC THI VÀ GHI NHẬT KÝ (LOG)
                 if (db.ExecuteNonQuery(sql))
                 {
+                    string action = isAdding ? "THÊM MỚI" : "CẬP NHẬT";
+                    string logDetail = isAdding
+                        ? $"Thêm SP mới: {name} (Mã: {productId}), Giá: {price:N0}, Kho: {stock}, Loại: {categoryName}"
+                        : $"Sửa SP: {name} (Mã: {productId}), Giá mới: {price:N0}, Kho mới: {stock}";
+
+                    // Gọi hàm ghi Log chung
+                    Utils.WriteLog(action, "Sản phẩm", logDetail);
+
                     MessageBox.Show(isAdding ? "Thêm sản phẩm thành công!" : "Cập nhật sản phẩm thành công!");
 
                     LoadProducts(txtSearchh.Text.Trim());
                     ClearInput();
-
-                    txtProductID.Enabled = true;
-                    isAdding = false;
-
-                    // Sau khi lưu xong -> khóa + xám
                     SetEditMode(false);
+                    isAdding = false;
                 }
                 else
                 {
-                    MessageBox.Show("Không thể lưu sản phẩm. Vui lòng xem log!");
+                    MessageBox.Show("Lỗi: Không thể lưu dữ liệu vào cơ sở dữ liệu.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi lưu sản phẩm: " + ex.Message);
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message);
                 Utils.LogDB("btnSave_Click_Product", ex);
             }
         }
@@ -378,7 +366,9 @@ WHERE ProductId='{productId}';
         private void btnDelete_Click(object sender, EventArgs e)
         {
             List<string> selectedIds = new List<string>();
+            List<string> selectedNames = new List<string>(); // Danh sách để lưu tên sản phẩm phục vụ ghi Log
 
+            // BƯỚC 1: Duyệt Grid để lấy thông tin sản phẩm đã chọn
             foreach (DataGridViewRow row in dgvProduct.Rows)
             {
                 if (row.IsNewRow) continue;
@@ -387,8 +377,13 @@ WHERE ProductId='{productId}';
                 if (isChecked)
                 {
                     string productId = row.Cells["cProductID"].Value?.ToString();
+                    string productName = row.Cells["cName"].Value?.ToString(); // Lấy tên sản phẩm từ cột cName
+
                     if (!string.IsNullOrWhiteSpace(productId))
+                    {
                         selectedIds.Add(productId.Replace("'", "''"));
+                        selectedNames.Add($"{productName} ({productId})"); // Lưu vào danh sách tạm
+                    }
                 }
             }
 
@@ -398,18 +393,18 @@ WHERE ProductId='{productId}';
                 return;
             }
 
+            // BƯỚC 2: Xác nhận xóa
             string message = selectedIds.Count == 1
-                ? $"Bạn có chắc muốn xoá sản phẩm ID = {selectedIds[0]} không?"
+                ? $"Bạn có chắc muốn xoá sản phẩm {selectedNames[0]} không?"
                 : $"Bạn có chắc muốn xoá {selectedIds.Count} sản phẩm đã chọn không?";
 
-            if (MessageBox.Show(message, "Xác nhận xoá",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (MessageBox.Show(message, "Xác nhận xoá", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
+            // BƯỚC 3: Thực hiện xóa trong Database
             try
             {
                 int successCount = 0;
-
                 foreach (string id in selectedIds)
                 {
                     string sql = $"DELETE FROM Products WHERE ProductId='{id}'";
@@ -417,12 +412,18 @@ WHERE ProductId='{productId}';
                         successCount++;
                 }
 
-                MessageBox.Show($"Đã xoá thành công {successCount} sản phẩm!");
+                if (successCount > 0)
+                {
+                    // BƯỚC 4: Ghi nhật ký chi tiết
+                    // Tạo chuỗi danh sách tên sản phẩm ngăn cách bởi dấu phẩy
+                    string details = "Danh sách xóa: " + string.Join(", ", selectedNames);
+                    Utils.WriteLog("XÓA", "Sản phẩm", details);
+
+                    MessageBox.Show($"Đã xoá thành công {successCount} sản phẩm!");
+                }
 
                 LoadProducts(txtSearchh.Text.Trim());
                 ClearInput();
-
-                // Sau khi xóa -> khóa + xám
                 SetEditMode(false);
             }
             catch (Exception ex)
@@ -430,6 +431,7 @@ WHERE ProductId='{productId}';
                 MessageBox.Show("Lỗi xoá sản phẩm: " + ex.Message);
                 Utils.LogDB("DeleteProduct", ex);
             }
+
         }
 
         // =========================

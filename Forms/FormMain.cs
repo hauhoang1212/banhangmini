@@ -86,14 +86,14 @@ namespace Quanlibanhang
                 string chucVu = (Session.Role == 1) ? "Quản lý: " : "Nhân viên: ";
                 lblUser.Text = chucVu + Session.FullName;
             }
-            
+
             dtpFromDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             dtpToDate.Value = DateTime.Now;
 
             PhanQuyen();
             btnFilter.PerformClick(); // Tự động nhấn nút lọc để hiện dữ liệu lần đầu
-            
-            
+
+
         }
 
         private void PhanQuyen()
@@ -122,7 +122,7 @@ namespace Quanlibanhang
             else
             {
                 lblStatus.Text = "Quyền hạn: Nhân viên bán hàng";
-               
+
             }
         }
         private void lblTime_Click(object sender, EventArgs e)
@@ -232,7 +232,7 @@ namespace Quanlibanhang
 
             if (dt == null || dt.Rows.Count == 0)
             {
-                
+
                 return;
             }
 
@@ -270,7 +270,16 @@ namespace Quanlibanhang
             InitRevenueChart(fromDate, toDate);
 
             // Gọi thêm hàm biểu đồ tròn (Pie Chart) nếu bạn đã viết
-             InitPieChart(fromDate, toDate);
+            InitPieChart(fromDate, toDate);
+        }
+
+        private void menulog_Click(object sender, EventArgs e)
+        {
+            // 1. Khởi tạo đối tượng FormLog
+            FormLog frmLog = new FormLog();
+
+            // 2. Hiển thị Form (Dùng ShowDialog để người dùng xử lý xong mới quay lại Form chính)
+            frmLog.ShowDialog();
         }
     }
 }

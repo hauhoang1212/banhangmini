@@ -58,11 +58,14 @@ namespace Quanlibanhang
         // =========================
         private void SetupUI()
         {
-            // Tổng tiền chỉ hiển thị, không cho nhập
             txtTotal.Enabled = false;
 
-            // Combo không cho nhập tay (chỉ chọn)
-            cboProduct.DropDownStyle = UIDropDownStyle.DropDownList;
+            // 1. Cho phép gõ văn bản vào ComboBox
+            cboProduct.DropDownStyle = UIDropDownStyle.DropDown;
+
+            // 2. Bật chế độ tự động gợi ý và hoàn thiện từ
+            cboProduct.ShowFilter = true;
+            cboProduct.FilterMaxCount = 50; // Hiển thị tối đa 50 kết quả gợi ý
         }
 
         private void InitGrid()

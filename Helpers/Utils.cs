@@ -1,4 +1,8 @@
 ﻿using Microsoft.Win32;
+using Quanlibanhang.Data;
+using Quanlibanhang.Forms;
+using System.Data;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -17,7 +21,28 @@ namespace Quanlibanhang.Helpers
         private static object lockFileAction = new object();
 
 
+        public static void WriteLog(string action, string table, string description)
+        {
+            SQLiteUtils db = new SQLiteUtils();
+            string sql = @"INSERT INTO ActivityLogs (UserName, Action, TargetTable, Description) 
+                   VALUES (@User, @Action, @Table, @Desc)";
 
+            // Lấy tên người dùng hiện tại từ Session
+            string currentUser = !string.IsNullOrEmpty(Session.FullName) ? Session.FullName : "Hệ thống";
+
+            using (var conn = db.GetConnection())
+            {
+                if (conn.State != ConnectionState.Open) conn.Open();
+                using (var cmd = new SQLiteCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@User", currentUser);
+                    cmd.Parameters.AddWithValue("@Action", action);
+                    cmd.Parameters.AddWithValue("@Table", table);
+                    cmd.Parameters.AddWithValue("@Desc", description);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
         public static void Logs(Exception ex, [CallerMemberName] string methodName = "")
         {
@@ -164,6 +189,7 @@ namespace Quanlibanhang.Helpers
                 // Có thể thêm ghi log cho exception tại đây nếu cần
             }
         }
+
 
 
 
