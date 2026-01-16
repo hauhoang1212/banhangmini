@@ -97,7 +97,6 @@ namespace Quanlibanhang
         }
         private void InitRevenueChart()
         {
-            // Đảm bảo đã khai báo: private readonly SQLiteUtils db = new SQLiteUtils(); ở đầu Class FormMain
             DataTable dt = db.ExecuteQuery(@"
         SELECT strftime('%d/%m', OrderDate) as Ngay, SUM(TotalAmount) as DoanhThu 
         FROM Orders 
@@ -107,12 +106,16 @@ namespace Quanlibanhang
 
             UIBarOption option = new UIBarOption();
             option.Title = new UITitle { Text = "Doanh thu 7 ngày gần nhất" };
-
-            // Sửa lỗi CS0029: Ép kiểu đúng loại ToolTip cho BarChart
             option.ToolTip = new UIBarToolTip();
+
+            // CHỈNH LỖI 000000: Tăng khoảng cách lề trái để hiện đủ số tiền lớn
+            option.Grid.Left = 80;
 
             UIBarSeries series = new UIBarSeries();
             series.Name = "Doanh thu";
+
+            // HIỂN THỊ SỐ TIỀN TRÊN ĐẦU MỖI CỘT
+            series.ShowValue = true;
 
             foreach (DataRow row in dt.Rows)
             {
@@ -120,8 +123,6 @@ namespace Quanlibanhang
                 double doanhThu = Convert.ToDouble(row["DoanhThu"]);
 
                 option.XAxis.Data.Add(ngay);
-
-                // SỬA LỖI CS1501: Thêm cả giá trị vào Series
                 series.AddData(doanhThu);
             }
 
