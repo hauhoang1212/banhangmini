@@ -107,7 +107,6 @@ namespace Quanlibanhang
 
             // Khóa search khi đang soạn thảo
             txtSearch.Enabled = !editing;
-            btnFilter.Enabled = !editing;
         }
         private void FillInputsFromRow(DataGridViewRow row)
         {
@@ -338,11 +337,6 @@ namespace Quanlibanhang
         private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
-        }
-
-        private void btnFilter_Click(object sender, EventArgs e)
-        {
-            LoadCategories(txtSearch.Text.Trim());
         }
 
         private void btnExportCsv_Click(object sender, EventArgs e)

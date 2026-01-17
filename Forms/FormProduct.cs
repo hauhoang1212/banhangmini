@@ -34,7 +34,6 @@ namespace Quanlibanhang.Forms
 
             // Gắn sự kiện (nếu bạn chưa gắn trong Designer)
             txtSearchh.TextChanged += txtSearchh_TextChanged;
-            btnFilter.Click += btnFilter_Click;
             cboCategory.SelectedIndexChanged += cboCategory_SelectedIndexChanged;
             dgvProduct.CellClick += dgvProduct_CellClick;
 
@@ -122,26 +121,33 @@ namespace Quanlibanhang.Forms
             {
                 dgvProduct.Rows.Clear();
 
+                // --- CÂU SQL GIỮ NGUYÊN LEFT JOIN ---
+                // Lấy p.CategoryID để xử lý logic (nếu cần)
+                // Lấy c.Name và đặt tên giả (Alias) là CategoryName để hiển thị lên lưới
                 string sql = @"
-SELECT 
-    p.ProductId,
-    p.Name,
-    p.Price,
-    p.CategoryID,
-    p.Description,
-    p.Stock,
-    p.IsActive,
-    c.Name AS CategoryName
-FROM Products p
-LEFT JOIN Categories c ON c.CategoryId = p.CategoryID
-WHERE 1=1
-";
+                    SELECT 
+                        p.ProductId,
+                        p.Name,
+                        p.Price,
+                        p.CategoryID, 
+                        c.Name AS CategoryName, 
+                        p.Description,
+                        p.Stock,
+                        p.IsActive
+                    FROM Products p
+                    LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
+                    WHERE 1=1
+                    ";
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
+                    // Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm
                     keyword = keyword.Replace("'", "''");
-                    sql += $" AND p.Name LIKE '%{keyword}%'";
+                    sql += $" AND (p.Name LIKE '%{keyword}%' OR p.ProductId LIKE '%{keyword}%')";
                 }
+
+                // Sắp xếp
+                sql += " ORDER BY p.ProductId ASC";
 
                 DataTable dt = db.ExecuteQuery(sql);
 
@@ -151,13 +157,16 @@ WHERE 1=1
                     int stock = 0;
                     int.TryParse(r["Stock"]?.ToString(), out stock);
 
+                    // Kiểm tra null cho CategoryName (đề phòng trường hợp ID không khớp hoặc null)
+                    string catName = r["CategoryName"] != DBNull.Value ? r["CategoryName"].ToString() : "Chưa phân loại";
+
                     int rowIndex = dgvProduct.Rows.Add(
                         false,                               // cChose
                         stt++,                               // cSTT
                         r["ProductId"]?.ToString(),          // cProductID
                         r["Name"]?.ToString(),               // cName
                         r["Price"]?.ToString(),              // cPrice
-                        r["CategoryName"]?.ToString(),       // cCategory
+                        catName,                             // cCategory (Lấy từ bảng Categories)
                         r["Description"]?.ToString(),        // cDSC
                         r["Stock"]?.ToString(),              // cStock
                         Convert.ToInt32(r["IsActive"]) == 1  // cIsActive
@@ -489,61 +498,120 @@ WHERE 1=1
         // =========================
         private void ImportProductsFromCsv(string filePath)
         {
-            if (!File.Exists(filePath))
+            // 1. Kiểm tra xem file có đang bị mở không
+            try
             {
-                MessageBox.Show("Không tìm thấy file CSV!");
+                using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("File Excel đang mở. Vui lòng tắt đi rồi thử lại!", "Lỗi");
                 return;
             }
+
+            if (!File.Exists(filePath)) return;
 
             try
             {
                 var lines = File.ReadAllLines(filePath, Encoding.UTF8);
                 if (lines.Length <= 1)
                 {
-                    MessageBox.Show("File CSV rỗng!");
+                    MessageBox.Show("File rỗng!");
                     return;
                 }
 
                 int ok = 0;
-                for (int i = 1; i < lines.Length; i++) // bỏ header
+                // Bắt đầu từ dòng 1 (bỏ header)
+                for (int i = 1; i < lines.Length; i++)
                 {
                     var parts = lines[i].Split(',');
                     if (parts.Length < 7) continue;
 
+                    // --- ĐỌC DỮ LIỆU ---
                     string pid = parts[0].Trim().Replace("'", "''");
                     string name = parts[1].Trim().Replace("'", "''");
                     string priceStr = parts[2].Trim();
-                    string catId = parts[3].Trim().Replace("'", "''");
+
+                    // Lấy "Tên Loại" từ file CSV (Ví dụ: "Thực phẩm")
+                    string catNameFromCSV = parts[3].Trim().Replace("'", "''");
+
                     string desc = parts[4].Trim().Replace("'", "''");
                     string stockStr = parts[5].Trim();
                     string activeStr = parts[6].Trim();
 
-                    if (!decimal.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal price))
-                        continue;
+                    // Validate số
+                    if (!decimal.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal price)) continue;
                     if (!int.TryParse(stockStr, out int stock)) stock = 0;
                     int isActive = (activeStr == "1" || activeStr.ToLower() == "true") ? 1 : 0;
 
+                    // Kiểm tra trùng Mã SP
                     string checkSql = $"SELECT COUNT(*) FROM Products WHERE ProductId='{pid}'";
-                    var dt = db.ExecuteQuery(checkSql);
-                    if (Convert.ToInt32(dt.Rows[0][0]) > 0) continue;
+                    if (Convert.ToInt32(db.ExecuteQuery(checkSql).Rows[0][0]) > 0) continue;
 
+                    // ============================================================
+                    // XỬ LÝ CATEGORIES (QUAN TRỌNG)
+                    // ============================================================
+                    string finalCatId = "";
+
+                    // Kiểm tra xem trong bảng Categories đã có Tên Loại này chưa?
+                    // (Lấy cột Name trong bảng Categories ra so sánh với file CSV)
+                    string sqlFindCat = $"SELECT CategoryID FROM Categories WHERE Name = '{catNameFromCSV}'";
+                    var dtCat = db.ExecuteQuery(sqlFindCat);
+
+                    if (dtCat.Rows.Count > 0)
+                    {
+                        // NẾU CÓ RỒI: Lấy cái ID của nó ra (Ví dụ: L01)
+                        finalCatId = dtCat.Rows[0]["CategoryID"].ToString();
+                    }
+                    else
+                    {
+                        // NẾU CHƯA CÓ: Tạo dòng mới trong bảng Categories
+                        // Lưu "Thực phẩm" vào cột Name
+                        finalCatId = "CAT_" + DateTime.Now.Ticks.ToString().Substring(10); // Tự sinh ID
+
+                        string sqlInsertCat = $@"
+                    INSERT INTO Categories(CategoryID, Name, Description) 
+                    VALUES('{finalCatId}', '{catNameFromCSV}', 'Imported')";
+
+                        db.ExecuteNonQuery(sqlInsertCat);
+                    }
+
+                    // ============================================================
+                    // INSERT VÀO PRODUCTS (Lưu ID để liên kết)
+                    // ============================================================
                     string insertSql = $@"
-INSERT INTO Products(ProductId, Name, Price, CategoryID, Description, Stock, IsActive)
-VALUES('{pid}','{name}',{price.ToString(CultureInfo.InvariantCulture)},'{catId}','{desc}',{stock},{isActive});
-";
+                INSERT INTO Products(ProductId, Name, Price, CategoryID, Description, Stock, IsActive)
+                VALUES('{pid}','{name}',{price.ToString(CultureInfo.InvariantCulture)},'{finalCatId}','{desc}',{stock},{isActive});
+            ";
+
                     if (db.ExecuteNonQuery(insertSql)) ok++;
                 }
 
-                MessageBox.Show($"Import thành công {ok} dòng!");
+                MessageBox.Show($"Đã import thành công {ok} sản phẩm!");
                 LoadProducts(txtSearchh.Text.Trim());
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi Import CSV: " + ex.Message);
+                MessageBox.Show("Lỗi: " + ex.Message);
                 Utils.LogDB("ImportProductsFromCsv", ex);
             }
         }
 
-       
+        private void btnImportCsv_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "CSV files (*.csv)|*.csv";
+                ofd.Title = "Chọn file CSV sản phẩm";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    ImportProductsFromCsv(ofd.FileName);
+                }
+            }
+        }
     }
 }

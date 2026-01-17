@@ -407,6 +407,7 @@
             txtPhone.Font = new Font("Microsoft Sans Serif", 12F);
             txtPhone.Location = new Point(625, 5);
             txtPhone.Margin = new Padding(4, 5, 4, 5);
+            txtPhone.MaxLength = 10;
             txtPhone.MinimumSize = new Size(1, 16);
             txtPhone.Name = "txtPhone";
             txtPhone.Padding = new Padding(5);
@@ -415,6 +416,8 @@
             txtPhone.TabIndex = 4;
             txtPhone.TextAlignment = ContentAlignment.MiddleCenter;
             txtPhone.Watermark = "";
+            txtPhone.TextChanged += txtPhone_TextChanged;
+            txtPhone.KeyPress += txtPhone_KeyPress;
             // 
             // txtTotal
             // 

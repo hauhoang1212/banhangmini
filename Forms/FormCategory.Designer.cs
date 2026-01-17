@@ -46,7 +46,6 @@
             uiTableLayoutPanel3 = new Sunny.UI.UITableLayoutPanel();
             btnExportCsv = new Sunny.UI.UIButton();
             uiLabel2 = new Sunny.UI.UILabel();
-            btnFilter = new Sunny.UI.UIButton();
             txtSearch = new Sunny.UI.UITextBox();
             uiLabel4 = new Sunny.UI.UILabel();
             dgvCategories = new DataGridView();
@@ -310,7 +309,6 @@
             uiTableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35.67839F));
             uiTableLayoutPanel3.Controls.Add(btnExportCsv, 3, 0);
             uiTableLayoutPanel3.Controls.Add(uiLabel2, 0, 0);
-            uiTableLayoutPanel3.Controls.Add(btnFilter, 2, 0);
             uiTableLayoutPanel3.Controls.Add(txtSearch, 1, 0);
             uiTableLayoutPanel3.Dock = DockStyle.Fill;
             uiTableLayoutPanel3.Location = new Point(0, 172);
@@ -349,20 +347,6 @@
             uiLabel2.TabIndex = 0;
             uiLabel2.Text = "Tìm kiếm";
             uiLabel2.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // btnFilter
-            // 
-            btnFilter.Dock = DockStyle.Fill;
-            btnFilter.Font = new Font("Microsoft Sans Serif", 12F);
-            btnFilter.Location = new Point(447, 0);
-            btnFilter.Margin = new Padding(0);
-            btnFilter.MinimumSize = new Size(1, 1);
-            btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(114, 38);
-            btnFilter.TabIndex = 2;
-            btnFilter.Text = "Lọc";
-            btnFilter.TipsFont = new Font("Microsoft Sans Serif", 9F);
-            btnFilter.Click += btnFilter_Click;
             // 
             // txtSearch
             // 
@@ -474,7 +458,6 @@
         private Sunny.UI.UIButton btnAdd;
         private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel3;
         private Sunny.UI.UILabel uiLabel2;
-        private Sunny.UI.UIButton btnFilter;
         private Sunny.UI.UITextBox txtSearch;
         private Sunny.UI.UILabel uiLabel4;
         private Sunny.UI.UILabel uiLabel5;

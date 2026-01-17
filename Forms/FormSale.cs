@@ -63,9 +63,12 @@ namespace Quanlibanhang
             // 1. Cho phép gõ văn bản vào ComboBox
             cboProduct.DropDownStyle = UIDropDownStyle.DropDown;
 
-            // 2. Bật chế độ tự động gợi ý và hoàn thiện từ
+            // 2. Bật chế độ tự động gợi ý và hoàn thiện từ của SunnyUI
             cboProduct.ShowFilter = true;
-            cboProduct.FilterMaxCount = 50; // Hiển thị tối đa 50 kết quả gợi ý
+            cboProduct.FilterMaxCount = 50;
+
+            // === MỚI: Cấu hình tìm kiếm không phân biệt hoa thường ===
+            cboProduct.FilterIgnoreCase = true;
         }
 
         private void InitGrid()
@@ -126,11 +129,11 @@ ORDER BY Name;
             try
             {
                 string sql = @"
-SELECT DISTINCT IFNULL(CustomerName,'') AS CustomerName
-FROM Orders
-WHERE TRIM(IFNULL(CustomerName,'')) <> ''
-ORDER BY CustomerName;
-";
+                                SELECT DISTINCT IFNULL(CustomerName,'') AS CustomerName
+                                FROM Orders
+                                WHERE TRIM(IFNULL(CustomerName,'')) <> ''
+                                ORDER BY CustomerName;
+                                ";
                 DataTable dt = db.ExecuteQuery(sql);
 
                 var ac = new AutoCompleteStringCollection();
@@ -210,6 +213,11 @@ ORDER BY CustomerName;
 
             RefreshCartGrid();
             UpdateTotalUI();
+            // === MỚI: Reset ComboBox về trạng thái rỗng ===
+            cboProduct.SelectedIndex = -1;  // Bỏ chọn item hiện tại
+            cboProduct.Text = string.Empty; // Xóa chữ trên ô nhập
+            nudQuantity.Value = 1;          // Reset số lượng về 1
+            cboProduct.Focus();             // Đưa con trỏ chuột về ô tìm kiếm để nhập tiếp
         }
 
         // =========================
@@ -496,6 +504,42 @@ ORDER BY CustomerName;
             catch (Exception ex)
             {
                 Utils.LogDB("SaveToExcel_Error", ex);
+            }
+        }
+
+        private void txtPhone_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Kiểm tra xem phím nhấn có phải là số không, và không phải phím điều khiển (như Backspace)
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true; // Hủy bỏ phím vừa nhấn (không cho nhập vào ô)
+            }
+        }
+        private void txtPhone_TextChanged(object sender, EventArgs e)
+        {
+            // Kiểm tra xem phím nhấn có phải là số không, và không phải phím điều khiển (như Backspace)
+            // 1. Đặt giới hạn chỉ được nhập 10 ký tự (nếu chưa chỉnh trong Properties)
+            txtPhone.MaxLength = 10;
+
+            // 2. (Tùy chọn) Kiểm tra nếu người dùng Paste chữ vào thì xóa đi
+            if (System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, "[^0-9]"))
+            {
+                // Xóa các ký tự không phải số
+                txtPhone.Text = System.Text.RegularExpressions.Regex.Replace(txtPhone.Text, "[^0-9]", "");
+                // Đưa con trỏ về cuối dòng
+                txtPhone.SelectionStart = txtPhone.Text.Length;
+            }
+
+            // 3. Logic kiểm tra hợp lệ (Ví dụ: Đổi màu nền nếu chưa đủ 10 số)
+            if (txtPhone.Text.Length != 10)
+            {
+                // Chưa đủ 10 số -> Hiện màu đỏ hoặc báo lỗi nhẹ
+                txtPhone.BackColor = Color.MistyRose;
+            }
+            else
+            {
+                // Đã đủ 10 số -> Màu trắng bình thường
+                txtPhone.BackColor = Color.White;
             }
         }
     }

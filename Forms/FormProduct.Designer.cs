@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             uiTableLayoutPanel1 = new Sunny.UI.UITableLayoutPanel();
             uiTableLayoutPanel3 = new Sunny.UI.UITableLayoutPanel();
             btnCancel = new Sunny.UI.UIButton();
@@ -52,8 +52,8 @@
             cIsActive = new DataGridViewCheckBoxColumn();
             uiLabel4 = new Sunny.UI.UILabel();
             uiTableLayoutPanel4 = new Sunny.UI.UITableLayoutPanel();
+            btnImportCsv = new Sunny.UI.UIButton();
             uiLabel1 = new Sunny.UI.UILabel();
-            btnFilter = new Sunny.UI.UIButton();
             txtSearchh = new Sunny.UI.UITextBox();
             uiTableLayoutPanel2 = new Sunny.UI.UITableLayoutPanel();
             txtStock = new Sunny.UI.UITextBox();
@@ -194,48 +194,48 @@
             // 
             // dgvProduct
             // 
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(235, 243, 255);
-            dgvProduct.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(235, 243, 255);
+            dgvProduct.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvProduct.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProduct.BackgroundColor = Color.White;
             dgvProduct.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = Color.FromArgb(80, 160, 255);
-            dataGridViewCellStyle7.Font = new Font("Microsoft Sans Serif", 12F);
-            dataGridViewCellStyle7.ForeColor = Color.White;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dgvProduct.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(80, 160, 255);
+            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 12F);
+            dataGridViewCellStyle2.ForeColor = Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvProduct.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvProduct.ColumnHeadersHeight = 32;
             dgvProduct.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dgvProduct.Columns.AddRange(new DataGridViewColumn[] { cChose, cSTT, cProductID, cName, cPrice, cCategory, cDSC, cStock, cIsActive });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Microsoft Sans Serif", 12F);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dgvProduct.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Microsoft Sans Serif", 12F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvProduct.DefaultCellStyle = dataGridViewCellStyle3;
             dgvProduct.Dock = DockStyle.Fill;
             dgvProduct.EnableHeadersVisualStyles = false;
             dgvProduct.Font = new Font("Microsoft Sans Serif", 12F);
             dgvProduct.GridColor = Color.FromArgb(80, 160, 255);
             dgvProduct.Location = new Point(3, 323);
             dgvProduct.Name = "dgvProduct";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = Color.FromArgb(235, 243, 255);
-            dataGridViewCellStyle9.Font = new Font("Microsoft Sans Serif", 12F);
-            dataGridViewCellStyle9.ForeColor = Color.FromArgb(48, 48, 48);
-            dataGridViewCellStyle9.SelectionBackColor = Color.FromArgb(80, 160, 255);
-            dataGridViewCellStyle9.SelectionForeColor = Color.White;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dgvProduct.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(235, 243, 255);
+            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 12F);
+            dataGridViewCellStyle4.ForeColor = Color.FromArgb(48, 48, 48);
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(80, 160, 255);
+            dataGridViewCellStyle4.SelectionForeColor = Color.White;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgvProduct.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dgvProduct.RowHeadersWidth = 51;
-            dataGridViewCellStyle10.BackColor = Color.White;
-            dataGridViewCellStyle10.Font = new Font("Microsoft Sans Serif", 12F);
-            dgvProduct.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.BackColor = Color.White;
+            dataGridViewCellStyle5.Font = new Font("Microsoft Sans Serif", 12F);
+            dgvProduct.RowsDefaultCellStyle = dataGridViewCellStyle5;
             dgvProduct.SelectedIndex = -1;
             dgvProduct.Size = new Size(984, 136);
             dgvProduct.StripeOddColor = Color.FromArgb(235, 243, 255);
@@ -327,8 +327,8 @@
             uiTableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.79397F));
             uiTableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 13.0653267F));
             uiTableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35.67839F));
+            uiTableLayoutPanel4.Controls.Add(btnImportCsv, 3, 0);
             uiTableLayoutPanel4.Controls.Add(uiLabel1, 0, 0);
-            uiTableLayoutPanel4.Controls.Add(btnFilter, 2, 0);
             uiTableLayoutPanel4.Controls.Add(txtSearchh, 1, 0);
             uiTableLayoutPanel4.Dock = DockStyle.Fill;
             uiTableLayoutPanel4.Location = new Point(0, 240);
@@ -339,6 +339,19 @@
             uiTableLayoutPanel4.Size = new Size(990, 40);
             uiTableLayoutPanel4.TabIndex = 6;
             uiTableLayoutPanel4.TagString = null;
+            // 
+            // btnImportCsv
+            // 
+            btnImportCsv.Dock = DockStyle.Fill;
+            btnImportCsv.Font = new Font("Microsoft Sans Serif", 12F);
+            btnImportCsv.Location = new Point(638, 3);
+            btnImportCsv.MinimumSize = new Size(1, 1);
+            btnImportCsv.Name = "btnImportCsv";
+            btnImportCsv.Size = new Size(349, 34);
+            btnImportCsv.TabIndex = 4;
+            btnImportCsv.Text = "Import CSV";
+            btnImportCsv.TipsFont = new Font("Microsoft Sans Serif", 9F);
+            btnImportCsv.Click += btnImportCsv_Click;
             // 
             // uiLabel1
             // 
@@ -353,19 +366,6 @@
             uiLabel1.TabIndex = 0;
             uiLabel1.Text = "Tìm kiếm";
             uiLabel1.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // btnFilter
-            // 
-            btnFilter.Dock = DockStyle.Fill;
-            btnFilter.Font = new Font("Microsoft Sans Serif", 12F);
-            btnFilter.Location = new Point(509, 3);
-            btnFilter.MinimumSize = new Size(1, 1);
-            btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(123, 34);
-            btnFilter.TabIndex = 2;
-            btnFilter.Text = "Lọc";
-            btnFilter.TipsFont = new Font("Microsoft Sans Serif", 9F);
-            btnFilter.Click += btnFilter_Click;
             // 
             // txtSearchh
             // 
@@ -654,7 +654,6 @@
         private Sunny.UI.UIComboBox cboCategory;
         private Sunny.UI.UITableLayoutPanel uiTableLayoutPanel4;
         private Sunny.UI.UILabel uiLabel1;
-        private Sunny.UI.UIButton btnFilter;
         private Sunny.UI.UITextBox txtSearchh;
         private Sunny.UI.UILabel uiLabel4;
         private Sunny.UI.UIDataGridView dgvProduct;
@@ -673,5 +672,6 @@
         private Sunny.UI.UIButton btnEdit;
         private Sunny.UI.UIButton btnAdd;
         private Sunny.UI.UIButton btnSave;
+        private Sunny.UI.UIButton btnImportCsv;
     }
 }
